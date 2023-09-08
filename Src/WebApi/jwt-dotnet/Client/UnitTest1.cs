@@ -30,6 +30,7 @@ namespace Client
         {
             s_webApp.Dispose();
         }
+
         [TestMethod]
         public void Access_Resource_HttpStatus_Should_Be_Unauthorized()
         {
