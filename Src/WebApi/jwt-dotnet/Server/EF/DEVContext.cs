@@ -12,6 +12,7 @@ namespace Server.EF
         //Constructor calling the DbContext class constructor
         public DEVContext() : base("name=DEV")
         {
+            Database.SetInitializer(new DEVDBInitializer());
         }
 
         //Adding Domain Classes as DbSet
