@@ -121,13 +121,18 @@
     <Compile Include="Controllers\ValueController.cs" />
     <Compile Include="DateTimeProvider.cs" />
     <Compile Include="EF\DEVContext.cs" />
-    <Compile Include="EF\JWT_ClientMaster.cs" />
-    <Compile Include="EF\JWT_UserMaster.cs" />
+    <Compile Include="EF\ClientMaster.cs" />
+    <Compile Include="EF\UserMaster.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="JwtAuthorizeAttribute.cs" />
     <Compile Include="JwtManager.cs" />
+    <Compile Include="Migrations\202309120204392_init-v1.cs" />
+    <Compile Include="Migrations\202309120204392_init-v1.designer.cs">
+      <DependentUpon>202309120204392_init-v1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +148,11 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202309120204392_init-v1.resx">
+      <DependentUpon>202309120204392_init-v1.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

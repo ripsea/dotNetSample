@@ -7,25 +7,30 @@ using System.Web;
 
 namespace Server.EF
 {
-    public class JWT_ClientMaster
+    [Table("JWT_ClientMaster")]
+    public class ClientMaster
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ClientKeyId { get; set; }
-        [Column("ClientID", TypeName = "nvarchar(500)")]
+        [Column("ClientID", TypeName = "nvarchar")]
+        [StringLength(500)]
         public string ClientID { get; set; }
-        [Column("ClientSecret", TypeName = "nvarchar(500)")]
+        [Column("ClientSecret", TypeName = "nvarchar")]
+        [StringLength(500)]
         public string ClientSecret { get; set; }
-        [Column("ClientName", TypeName = "nvarchar(100)")]
+        [Column("ClientName", TypeName = "nvarchar")]
+        [StringLength(100)]
         public string ClientName { get; set; }
         [Column("Active", TypeName = "bit")]
         public bool Active { get; set; }
         [Column("RefreshTokenLifeTime", TypeName = "int")]
         public int RefreshTokenLifeTime { get; set; }
-        [Column("AllowedOrigin", TypeName = "nvarchar(500)")]
+        [Column("AllowedOrigin", TypeName = "nvarchar")]
+        [StringLength(500)]
         public string AllowedOrigin { get; set; }
 
-        public JWT_ClientMaster(int ClientKeyId_, string ClientID_, string ClientSecret_, string ClientName_, bool Active_, int RefreshTokenLifeTime_, string AllowedOrigin_)
+        public ClientMaster(int ClientKeyId_, string ClientID_, string ClientSecret_, string ClientName_, bool Active_, int RefreshTokenLifeTime_, string AllowedOrigin_)
         {
             this.ClientKeyId = ClientKeyId_;
             this.ClientID = ClientID_;

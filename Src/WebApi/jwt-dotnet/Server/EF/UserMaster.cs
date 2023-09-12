@@ -7,40 +7,45 @@ using System.Web;
 
 namespace Server.EF
 {
-    public class JWT_UserMaster
+    [Table("JWT_UserMaster")]
+    public class UserMaster
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
-        [Column("UserName", TypeName = "nvarchar(50)")]
+        [Column("UserName", TypeName = "nvarchar")]
+        [StringLength(50)]
         public string UserName { get; set; }
-        [Column("UserPassword", TypeName = "nvarchar(50)")]
+        [Column("UserPassword", TypeName = "nvarchar")]
+        [StringLength(50)]
         public string UserPassword { get; set; }
-        [Column("UserRoles", TypeName = "nvarchar(500)")]
+        [Column("UserRoles", TypeName = "nvarchar")]
+        [StringLength(500)]
         public string UserRoles { get; set; }
-        [Column("UserEmailID", TypeName = "nvarchar(100)")]
+        [Column("UserEmailID", TypeName = "nvarchar")]
+        [StringLength(100)]
         public string UserEmailID { get; set; }
 
         //chain methods
-        public JWT_UserMaster SetUserName(string UserName)
+        public UserMaster SetUserName(string UserName)
         {
             this.UserName = UserName;
             return this;
         }
 
-        public JWT_UserMaster SetUserPassword(string UserPassword)
+        public UserMaster SetUserPassword(string UserPassword)
         {
             this.UserPassword = UserPassword;
             return this;
         }
 
-        public JWT_UserMaster SetUserRoles(string userRoles)
+        public UserMaster SetUserRoles(string userRoles)
         {
             this.UserRoles = userRoles;
             return this;
         }
 
-        public JWT_UserMaster SetUserEmailID(string UserEmailID)
+        public UserMaster SetUserEmailID(string UserEmailID)
         {
             this.UserEmailID = UserEmailID;
             return this;

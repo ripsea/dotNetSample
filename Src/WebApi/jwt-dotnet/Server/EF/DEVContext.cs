@@ -12,12 +12,18 @@ namespace Server.EF
         //Constructor calling the DbContext class constructor
         public DEVContext() : base("name=DEV")
         {
-            Database.SetInitializer(new DEVDBInitializer());
+            //Database.SetInitializer(new DEVDBInitializer());
+            //when "Enable-Migrations" enabled, initializer replaced by Migrations/Configuation.cs
         }
+        /*
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {   
 
+        }
+        */
         //Adding Domain Classes as DbSet
-        public DbSet<JWT_ClientMaster> ClientMasters { get; set; }
-        public DbSet<JWT_UserMaster> UserMasters { get; set; }
+        public DbSet<ClientMaster> ClientMasters { get; set; }
+        public DbSet<UserMaster> UserMasters { get; set; }
 
     }
 }
