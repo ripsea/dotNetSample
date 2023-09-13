@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Server.Models;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
@@ -27,8 +28,12 @@ namespace Server.Controllers
 
         public bool CheckUser(string username, string password)
         {
-            // should check in the database
-            return true;
+            using (UserRepository _repo = new UserRepository())
+            {
+                var user = _repo.ValidateUser(username: username, password: password);
+                if (user!=null) { return true; }
+            }
+            return false;
         }
 
         public class LoginData

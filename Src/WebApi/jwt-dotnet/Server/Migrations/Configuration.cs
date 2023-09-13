@@ -20,7 +20,8 @@
             jWT_UserMaster
                 .SetUserName("iris")
                 .SetUserEmailID("iris@uxb2b.com")
-                .SetUserPassword("iris");
+                .SetUserPassword("iris")
+                .SetUserRoles("admin");
 
             context.UserMasters.Add(jWT_UserMaster);
 

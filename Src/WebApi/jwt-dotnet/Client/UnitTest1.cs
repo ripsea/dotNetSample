@@ -49,8 +49,8 @@ namespace Client
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
                                                          new LoginData
                                                          {
-                                                             UserName = "yao",
-                                                             Password = "1234"
+                                                             UserName = "iris",
+                                                             Password = "iris"
                                                          })
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
