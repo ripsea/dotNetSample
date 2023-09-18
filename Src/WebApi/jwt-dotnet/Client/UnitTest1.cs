@@ -14,6 +14,7 @@ namespace Client
         private const string HOST_ADDRESS = "http://localhost:8002";
         private static IDisposable s_webApp;
         private static HttpClient s_client;
+        private static LoginData loginDataOK;
 
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext context)
@@ -23,6 +24,12 @@ namespace Client
             s_client = new HttpClient();
             s_client.BaseAddress = new Uri(HOST_ADDRESS);
             Console.WriteLine("HttpClient started!");
+
+            loginDataOK = new LoginData
+            {
+                UserName = "iris",
+                Password = "iris"
+            };
         }
 
         [AssemblyCleanup]
@@ -47,11 +54,7 @@ namespace Client
             var queryUrl = "api/value";
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
-                                                         new LoginData
-                                                         {
-                                                             UserName = "iris",
-                                                             Password = "iris"
-                                                         })
+                                                         loginDataOK)
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
 
@@ -73,11 +76,7 @@ namespace Client
             JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
-                                                         new LoginData
-                                                         {
-                                                             UserName = "yao",
-                                                             Password = "1234"
-                                                         })
+                                                         loginDataOK)
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
 
@@ -101,11 +100,7 @@ namespace Client
             JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 2), DateTimeKind.Utc);
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
-                                                         new LoginData
-                                                         {
-                                                             UserName = "yao",
-                                                             Password = "1234"
-                                                         })
+                                                         loginDataOK)
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
 

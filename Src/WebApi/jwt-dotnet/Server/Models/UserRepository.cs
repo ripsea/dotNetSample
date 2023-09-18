@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Server.Models
 {
-    public class UserRepository: IDisposable
+    public class UserRepository : IDisposable
     {
 
         DEVContext context = new DEVContext();
@@ -17,8 +17,8 @@ namespace Server.Models
             try
             {
                 UserMaster userMaster = context.UserMasters.FirstOrDefault(user =>
-user.UserName.Equals(username, StringComparison.OrdinalIgnoreCase)
-&& user.UserPassword == password);
+                    user.UserName.Equals(username, StringComparison.OrdinalIgnoreCase)
+                    && user.UserPassword == password);
                 return userMaster;
             }
             catch (Exception ex)

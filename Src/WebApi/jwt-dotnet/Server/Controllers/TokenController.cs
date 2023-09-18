@@ -10,7 +10,7 @@ namespace Server.Controllers
     public class TokenController : ApiController
     {
         // POST api/token
-        [AllowAnonymous]
+        [AllowAnonymous]    //進Controller前不用經過JwtAuthorizeAttribute的Token檢查
         public IHttpActionResult Post(LoginData loginData)
         {
             if (this.CheckUser(loginData.UserName, loginData.Password))
