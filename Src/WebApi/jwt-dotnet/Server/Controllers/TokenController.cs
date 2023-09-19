@@ -15,7 +15,7 @@ namespace Server.Controllers
         {
             if (this.CheckUser(loginData.UserName, loginData.Password))
             {
-                var token = JwtManager.GenerateToken(loginData.UserName);
+                var token = JwtService.GenerateToken(loginData.UserName);
                 return new ResponseMessageResult(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,

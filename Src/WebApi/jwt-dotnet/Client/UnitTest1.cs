@@ -73,7 +73,7 @@ namespace Client
             var queryUrl = "api/value";
 
             //注入期望時間
-            JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
+            JwtService.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
                                                          loginDataOK)
@@ -84,10 +84,10 @@ namespace Client
             s_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //模擬時間經過30分鐘
-            JwtManager.Now = JwtManager.Now.Value.AddMinutes(30);
+            JwtService.Now = JwtService.Now.Value.AddMinutes(30);
             var queryResponse = s_client.GetAsync(queryUrl).Result;
             Assert.AreEqual(HttpStatusCode.Unauthorized, queryResponse.StatusCode);
-            JwtManager.Now = null;
+            JwtService.Now = null;
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace Client
             var queryUrl = "api/value";
 
             //注入Token可以使用的時間
-            JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 2), DateTimeKind.Utc);
+            JwtService.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 2), DateTimeKind.Utc);
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
                                                          loginDataOK)
@@ -108,10 +108,10 @@ namespace Client
             s_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //注入目前時間
-            JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
+            JwtService.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
             var queryResponse = s_client.GetAsync(queryUrl).Result;
             Assert.AreEqual(HttpStatusCode.Unauthorized, queryResponse.StatusCode);
-            JwtManager.Now = null;
+            JwtService.Now = null;
         }
 
         public class LoginData

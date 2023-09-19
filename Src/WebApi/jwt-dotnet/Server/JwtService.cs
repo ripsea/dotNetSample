@@ -7,7 +7,7 @@ using JWT.Serializers;
 
 namespace Server
 {
-    public class JwtManager
+    public class JwtService
     {
         /// <summary>
         ///     Use the below code to generate symmetric Secret Key
@@ -32,6 +32,8 @@ namespace Server
             }
             set { s_now = value; }
         }
+
+
 
         public static string GenerateToken(string userName, int expireMinutes = 20)
         {
