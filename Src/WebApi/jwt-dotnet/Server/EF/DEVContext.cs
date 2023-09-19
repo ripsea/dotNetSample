@@ -24,6 +24,7 @@ namespace Server.EF
         //Adding Domain Classes as DbSet
         public DbSet<ClientMaster> ClientMasters { get; set; }
         public DbSet<UserMaster> UserMasters { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     }
 }

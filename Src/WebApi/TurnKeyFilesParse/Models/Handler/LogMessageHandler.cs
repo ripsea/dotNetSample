@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Api.Models.Handler
+namespace TurnKeyFilesParse.Models.Handler
 {
     public class LogMessageHandler : DelegatingHandler
     {

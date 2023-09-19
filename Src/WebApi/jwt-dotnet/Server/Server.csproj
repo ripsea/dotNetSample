@@ -122,6 +122,7 @@
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
     <Compile Include="DateTimeProvider.cs" />
+    <Compile Include="EF\RefreshToken.cs" />
     <Compile Include="EF\DEVContext.cs" />
     <Compile Include="EF\ClientMaster.cs" />
     <Compile Include="EF\UserMaster.cs" />
@@ -134,12 +135,23 @@
     <Compile Include="Migrations\202309120204392_init-v1.designer.cs">
       <DependentUpon>202309120204392_init-v1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309190222569_create-refreshtoken.cs" />
+    <Compile Include="Migrations\202309190222569_create-refreshtoken.designer.cs">
+      <DependentUpon>202309190222569_create-refreshtoken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309190227210_create-refreshtoken-v2.cs" />
+    <Compile Include="Migrations\202309190227210_create-refreshtoken-v2.designer.cs">
+      <DependentUpon>202309190227210_create-refreshtoken-v2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
+    <Content Include="..\..\..\..\ConnectionStrings.config">
+      <Link>ConnectionStrings.config</Link>
+    </Content>
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -156,6 +168,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202309120204392_init-v1.resx">
       <DependentUpon>202309120204392_init-v1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309190222569_create-refreshtoken.resx">
+      <DependentUpon>202309190222569_create-refreshtoken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309190227210_create-refreshtoken-v2.resx">
+      <DependentUpon>202309190227210_create-refreshtoken-v2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

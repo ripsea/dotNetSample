@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Web.Http.Hosting;
 
-namespace Api.Models.Handler
+namespace TurnKeyFilesParse.Models.Handler
 {
     public class WebApiCustomMessageHandler : DelegatingHandler
     {
