@@ -6,8 +6,9 @@
 ## Log及Exception處理流程-TurnKeyFilesParse
 
 1.裡層程式丟出exception
+  ``` c#
   throw new DirectoryNotFoundException(path);
-  
+  ```
 2.取消Controller catch:透過DelegatingHandler寫log和打包訊息Controller catch並寫詳細log, 再丟出, 避免出現不適當的前端訊息
 
    catch (Exception ex)
