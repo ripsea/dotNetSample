@@ -1,12 +1,13 @@
-# Asp.NetDemo
-# 待辦
+# 測試記錄要項說明
+## Logger.cs-TurnKeyFilesParse
 
-# 說明
-## Logger.cs
 若空白(未設定)就預設在專案的Logs下ConfigurationManager.AppSettings["LogPath"]
-## Log及Exception處理流程
+
+## Log及Exception處理流程-TurnKeyFilesParse
+
 1.裡層程式丟出exception
   throw new DirectoryNotFoundException(path);
+  
 2.取消Controller catch:透過DelegatingHandler寫log和打包訊息
 	Controller catch並寫詳細log, 再丟出, 避免出現不適當的前端訊息
    catch (Exception ex)
@@ -14,6 +15,7 @@
        Logger.Warn(ex.ToString());
        return this.BadRequest();
    }
+   
 3.DelegatingHandler(WrappingHandler.cs) catch response, 分析後發現非code 200, 將錯誤訊息用統一的api訊息打包後丟到前端
    if (response.TryGetContentValue(out content)
        && !response.IsSuccessStatusCode)
@@ -31,6 +33,7 @@
     .CreateResponse(
         response.StatusCode,
         new ApiResponse(response.StatusCode, content, errorMessage));
+	
 4.以檢查路徑是否存在為例, 不存在就丟訊息 throw new DirectoryNotFoundException(path);
 	2023/08/28 10:42:23 //this is release.ExceptionMessage. 
 	System.IO.DirectoryNotFoundException: D:\Doc\E0501
