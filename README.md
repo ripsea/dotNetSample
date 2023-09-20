@@ -11,6 +11,7 @@
   ```
 2.取消Controller catch:透過DelegatingHandler寫log和打包訊息Controller catch並寫詳細log, 再丟出, 避免出現不適當的前端訊息
   ``` c#
+
    catch (Exception ex)
    {
        Logger.Warn(ex.ToString());
@@ -31,6 +32,7 @@
 	#endif
    }
    ...
+   
    return request
     .CreateResponse(
         response.StatusCode,
