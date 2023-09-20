@@ -12,6 +12,7 @@ namespace DynamicCreateLocalDB
     {
         //參考範例:
         //建DB測試資料範例 - https://kevintsengtw.blogspot.com/2016/10/repository-localdb-part1.html
+        //測試相關file處理 - https://sau001.wordpress.com/2019/02/24/net-core-unit-tests-how-to-deploy-files-without-using-deploymentitem/
         //MSTest with EF Code First - https://martinwilley.com/net/code/localdbtest.html
 
         private const string LocalDbMasterConnectionString =

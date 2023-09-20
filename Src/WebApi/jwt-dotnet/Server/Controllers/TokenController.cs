@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Server.Models;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
@@ -9,12 +10,12 @@ namespace Server.Controllers
     public class TokenController : ApiController
     {
         // POST api/token
-        [AllowAnonymous]
+        [AllowAnonymous]    //進Controller前不用經過JwtAuthorizeAttribute的Token檢查
         public IHttpActionResult Post(LoginData loginData)
         {
             if (this.CheckUser(loginData.UserName, loginData.Password))
             {
-                var token = JwtManager.GenerateToken(loginData.UserName);
+                var token = JwtService.GenerateToken(loginData.UserName);
                 return new ResponseMessageResult(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -27,8 +28,12 @@ namespace Server.Controllers
 
         public bool CheckUser(string username, string password)
         {
-            // should check in the database
-            return true;
+            using (UserRepository _repo = new UserRepository())
+            {
+                var user = _repo.ValidateUser(username: username, password: password);
+                if (user!=null) { return true; }
+            }
+            return false;
         }
 
         public class LoginData

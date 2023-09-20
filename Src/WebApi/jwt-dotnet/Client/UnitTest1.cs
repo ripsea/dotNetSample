@@ -14,6 +14,7 @@ namespace Client
         private const string HOST_ADDRESS = "http://localhost:8002";
         private static IDisposable s_webApp;
         private static HttpClient s_client;
+        private static LoginData loginDataOK;
 
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext context)
@@ -23,6 +24,12 @@ namespace Client
             s_client = new HttpClient();
             s_client.BaseAddress = new Uri(HOST_ADDRESS);
             Console.WriteLine("HttpClient started!");
+
+            loginDataOK = new LoginData
+            {
+                UserName = "iris",
+                Password = "iris"
+            };
         }
 
         [AssemblyCleanup]
@@ -30,6 +37,7 @@ namespace Client
         {
             s_webApp.Dispose();
         }
+
         [TestMethod]
         public void Access_Resource_HttpStatus_Should_Be_Unauthorized()
         {
@@ -46,11 +54,7 @@ namespace Client
             var queryUrl = "api/value";
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
-                                                         new LoginData
-                                                         {
-                                                             UserName = "yao",
-                                                             Password = "1234"
-                                                         })
+                                                         loginDataOK)
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
 
@@ -69,14 +73,10 @@ namespace Client
             var queryUrl = "api/value";
 
             //注入期望時間
-            JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
+            JwtService.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
-                                                         new LoginData
-                                                         {
-                                                             UserName = "yao",
-                                                             Password = "1234"
-                                                         })
+                                                         loginDataOK)
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
 
@@ -84,10 +84,10 @@ namespace Client
             s_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //模擬時間經過30分鐘
-            JwtManager.Now = JwtManager.Now.Value.AddMinutes(30);
+            JwtService.Now = JwtService.Now.Value.AddMinutes(30);
             var queryResponse = s_client.GetAsync(queryUrl).Result;
             Assert.AreEqual(HttpStatusCode.Unauthorized, queryResponse.StatusCode);
-            JwtManager.Now = null;
+            JwtService.Now = null;
         }
 
         [TestMethod]
@@ -97,14 +97,10 @@ namespace Client
             var queryUrl = "api/value";
 
             //注入Token可以使用的時間
-            JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 2), DateTimeKind.Utc);
+            JwtService.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 2), DateTimeKind.Utc);
 
             var tokenResponse = s_client.PostAsJsonAsync(loginUrl,
-                                                         new LoginData
-                                                         {
-                                                             UserName = "yao",
-                                                             Password = "1234"
-                                                         })
+                                                         loginDataOK)
                                         .Result;
             Assert.AreEqual(HttpStatusCode.OK, tokenResponse.StatusCode);
 
@@ -112,10 +108,10 @@ namespace Client
             s_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             //注入目前時間
-            JwtManager.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
+            JwtService.Now = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
             var queryResponse = s_client.GetAsync(queryUrl).Result;
             Assert.AreEqual(HttpStatusCode.Unauthorized, queryResponse.StatusCode);
-            JwtManager.Now = null;
+            JwtService.Now = null;
         }
 
         public class LoginData

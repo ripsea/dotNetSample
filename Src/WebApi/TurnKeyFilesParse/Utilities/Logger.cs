@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Runtime;
 using System.Configuration;
 
-namespace Api.Utilities
+namespace TurnKeyFilesParse.Utilities
 {
     /// <summary>
     /// Logger 的摘要描述。

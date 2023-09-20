@@ -14,7 +14,7 @@ namespace Server
             if (authorization != null && authorization.Scheme == "Bearer")
             {
                 var token = authorization.Parameter;
-                if (JwtManager.TryValidateToken(token, out var principal))
+                if (JwtService.TryValidateToken(token, out var principal))
                 {
                     Thread.CurrentPrincipal = principal;
                     if (HttpContext.Current != null)

@@ -14,6 +14,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicCreateLocalDB", "Test\DynamicCreateLocalDB\DynamicCreateLocalDB.csproj", "{8F5087EC-37D5-4ED5-BBCE-D107C70D75F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JWT", "JWT\JWT.csproj", "{6B24006C-BB39-4100-9C6C-1D2C432C00D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Src\WebApi\jwt-dotnet\Server\Server.csproj", "{82F28D29-9D08-4312-8993-E4F0DEDE515B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Src\WebApi\jwt-dotnet\Client\Client.csproj", "{9104BB35-639E-4CAC-BE90-C598BD6B4375}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{89992246-B6B3-4E62-B66A-D46D3C7D2362}"
+	ProjectSection(SolutionItems) = preProject
+		ConnectionStrings.config = ConnectionStrings.config
+	EndProjectSection
+>>>>>>> feat/JWTToRefreshToken
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +42,21 @@ Global
 		{8F5087EC-37D5-4ED5-BBCE-D107C70D75F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F5087EC-37D5-4ED5-BBCE-D107C70D75F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F5087EC-37D5-4ED5-BBCE-D107C70D75F9}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{6B24006C-BB39-4100-9C6C-1D2C432C00D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6B24006C-BB39-4100-9C6C-1D2C432C00D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B24006C-BB39-4100-9C6C-1D2C432C00D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B24006C-BB39-4100-9C6C-1D2C432C00D8}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{82F28D29-9D08-4312-8993-E4F0DEDE515B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F28D29-9D08-4312-8993-E4F0DEDE515B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F28D29-9D08-4312-8993-E4F0DEDE515B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F28D29-9D08-4312-8993-E4F0DEDE515B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9104BB35-639E-4CAC-BE90-C598BD6B4375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9104BB35-639E-4CAC-BE90-C598BD6B4375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9104BB35-639E-4CAC-BE90-C598BD6B4375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9104BB35-639E-4CAC-BE90-C598BD6B4375}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> feat/JWTToRefreshToken
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,7 +65,12 @@ Global
 		{EB30B6A3-C867-4FBF-9092-E358362E316F} = {D89D7915-BD39-4B86-A282-4275045B099D}
 		{34D06710-BC2A-4F6C-91AA-F9AA046A97B9} = {88A7F224-5D80-4D96-BE82-ECE735F5F5B3}
 		{8F5087EC-37D5-4ED5-BBCE-D107C70D75F9} = {88A7F224-5D80-4D96-BE82-ECE735F5F5B3}
+<<<<<<< HEAD
 		{6B24006C-BB39-4100-9C6C-1D2C432C00D8} = {D89D7915-BD39-4B86-A282-4275045B099D}
+=======
+		{82F28D29-9D08-4312-8993-E4F0DEDE515B} = {D89D7915-BD39-4B86-A282-4275045B099D}
+		{9104BB35-639E-4CAC-BE90-C598BD6B4375} = {D89D7915-BD39-4B86-A282-4275045B099D}
+>>>>>>> feat/JWTToRefreshToken
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C4BCF6E-9745-4A7D-9D43-AA660EC9FE43}
