@@ -4,23 +4,23 @@ using System.Reflection.Emit;
 using System.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Repository.Models;
 using Server.EF;
 
 namespace Repo.DB
 {
-    public class DEVContext : DbContext
+    public class DEVDbContext : DbContext
     {
         //Constructor calling the DbContext class constructor
 
-        public DEVContext(DbContextOptions<DEVContext> options) : base(options)
+        public DEVDbContext(DbContextOptions<DEVDbContext> options) : base(options)
         {
             //Database.SetInitializer(new DEVDBInitializer());
             //when "Enable-Migrations" enabled, initializer replaced by Migrations/Configuation.cs
         }
 
         //Adding Domain Classes as DbSet
-        public DbSet<JwtUser> JwtUsers { get; set; }
-        public DbSet<JwtUserRefreshTokens> JwtUserRefreshTokens { get; set; }
+        public virtual DbSet<UserRefreshTokens> UserRefreshToken { get; set; }
 
     }
 }

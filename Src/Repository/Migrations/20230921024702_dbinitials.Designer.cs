@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repo.DB;
 
@@ -10,10 +11,12 @@ using Repo.DB;
 
 namespace Repo.Migrations
 {
-    [DbContext(typeof(DEVContext))]
-    partial class DEVContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DEVDbContext))]
+    [Migration("20230921024702_dbinitials")]
+    partial class dbinitials
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
