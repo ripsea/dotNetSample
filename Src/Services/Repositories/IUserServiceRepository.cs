@@ -1,4 +1,6 @@
-﻿namespace Repository.Models.Repositories
+﻿using Data.Entities;
+
+namespace Services.Models.Repositories
 {
     public interface IUserServiceRepository
     {

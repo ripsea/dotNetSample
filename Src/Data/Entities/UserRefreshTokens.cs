@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Repository.Models
+namespace Data.Entities
 {
-    public class UserRefreshTokens
+    public class UserRefreshTokens: BaseEntity
     {
         [Key]
         public int Id { get; set; }

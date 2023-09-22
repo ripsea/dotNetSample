@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Repository.Models.Repositories
+namespace Services.Models.Repositories
 {
     public interface IJWTManagerRepository
     {

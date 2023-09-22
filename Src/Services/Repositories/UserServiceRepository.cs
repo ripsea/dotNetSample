@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Repo.DB;
+﻿using Data.DB;
+using Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace Repository.Models.Repositories
+namespace Services.Models.Repositories
 {
     public class UserServiceRepository : IUserServiceRepository
     {
@@ -17,22 +18,22 @@ namespace Repository.Models.Repositories
 
         public UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user)
         {
-            _db.UserRefreshToken.Add(user);
+            _db.UserRefreshTokens.Add(user);
             return user;
         }
 
         public void DeleteUserRefreshTokens(string username, string refreshToken)
         {
-            var item = _db.UserRefreshToken.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken);
+            var item = _db.UserRefreshTokens.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken);
             if (item != null)
             {
-                _db.UserRefreshToken.Remove(item);
+                _db.UserRefreshTokens.Remove(item);
             }
         }
 
         public UserRefreshTokens GetSavedRefreshTokens(string username, string refreshToken)
         {
-            return _db.UserRefreshToken.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken && x.IsActive == true);
+            return _db.UserRefreshTokens.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken && x.IsActive == true);
         }
 
         public int SaveCommit()

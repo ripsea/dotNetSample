@@ -1,4 +1,4 @@
-﻿namespace Repository.Models
+﻿namespace Services.Models
 {
     public class Users
     {

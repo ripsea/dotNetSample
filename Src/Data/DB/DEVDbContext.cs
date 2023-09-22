@@ -2,12 +2,10 @@
 using System.Linq;
 using System.Reflection.Emit;
 using System.Web;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Repository.Models;
-using Server.EF;
 
-namespace Repo.DB
+namespace Data.DB
 {
     public class DEVDbContext : DbContext
     {
@@ -20,7 +18,7 @@ namespace Repo.DB
         }
 
         //Adding Domain Classes as DbSet
-        public virtual DbSet<UserRefreshTokens> UserRefreshToken { get; set; }
+        public virtual DbSet<UserRefreshTokens> UserRefreshTokens { get; set; }
 
     }
 }
