@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Src\Data\Data.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurnKeyFilesParse", "Src\TurnKeyFilesParse\TurnKeyFilesParse.csproj", "{EB30B6A3-C867-4FBF-9092-E358362E316F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtTest", "Test\Jwt\JwtTest.csproj", "{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{EB30B6A3-C867-4FBF-9092-E358362E316F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB30B6A3-C867-4FBF-9092-E358362E316F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB30B6A3-C867-4FBF-9092-E358362E316F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{72FBFEB9-D8D4-42EC-9E44-7A7EA005004A} = {D89D7915-BD39-4B86-A282-4275045B099D}
 		{0FA56C8A-6754-4389-8BEB-60E37596265C} = {D89D7915-BD39-4B86-A282-4275045B099D}
 		{EB30B6A3-C867-4FBF-9092-E358362E316F} = {D89D7915-BD39-4B86-A282-4275045B099D}
+		{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1} = {88A7F224-5D80-4D96-BE82-ECE735F5F5B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C4BCF6E-9745-4A7D-9D43-AA660EC9FE43}
