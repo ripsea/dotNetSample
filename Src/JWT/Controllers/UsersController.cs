@@ -14,7 +14,9 @@ namespace Jwt.Controllers
         private readonly IJWTManagerRepository jWTManager;
         private readonly IUserServiceRepository userServiceRepository;
 
-        public UsersController(IJWTManagerRepository jWTManager, IUserServiceRepository userServiceRepository)
+        public UsersController(
+            IJWTManagerRepository jWTManager, 
+            IUserServiceRepository userServiceRepository)
         {
             this.jWTManager = jWTManager;
             this.userServiceRepository = userServiceRepository;

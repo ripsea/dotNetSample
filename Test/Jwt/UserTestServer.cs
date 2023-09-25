@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using NSubstitute;
 using Services.Models.Repositories;
 using System;
 using System.Collections.Generic;
@@ -16,12 +15,6 @@ namespace JwtTest
     {
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped(p =>
-            {
-                var userService = Substitute.For<IUserServiceRepository>();
-                userService.AddUserRefreshTokens().RefreshToken
-                return userService;
-            });
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)

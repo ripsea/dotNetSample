@@ -12,7 +12,7 @@ namespace Jwt
         }
 
         [Test]
-        public void WebApplicationFactory基本用法()
+        public void WebApplicationFactory_Basic()
         {
             var server = new WebApplicationFactory<Program>();
             var client = server.CreateClient();
