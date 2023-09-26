@@ -1,0 +1,23 @@
+﻿using Data.DB;
+using Data.Entities;
+using Data.Repositories.Base;
+using Data.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Data.Repositories
+{
+    internal class UserRepository : 
+        RepositoryBase<User>, 
+        IUserRepository
+    {
+        public UserRepository(DEVDbContext repositoryContext) : 
+            base(repositoryContext)
+        {
+        }
+
+    }
+}

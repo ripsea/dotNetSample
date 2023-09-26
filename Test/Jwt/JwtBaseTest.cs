@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace JwtTest
 {
-    internal class JwtBaseTest
+    public class JwtBaseTest
     {
         private readonly JwtWebApplicationFactory _webApplicationFactory;
-        public ExternalServicesMock ExternalServicesMock { get; }
+        public ExternalServicesMock externalServicesMock { get; }
 
         public JwtBaseTest()
         {
-            ExternalServicesMock = new ExternalServicesMock();
-            _webApplicationFactory = new JwtWebApplicationFactory(ExternalServicesMock);
+            externalServicesMock = new ExternalServicesMock();
+            _webApplicationFactory = new JwtWebApplicationFactory(externalServicesMock);
         }
 
         public HttpClient GetClient() => _webApplicationFactory.CreateClient();

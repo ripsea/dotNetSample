@@ -4,14 +4,14 @@ namespace Services.Models.Repositories
 {
     public interface IUserServiceRepository
     {
-        Task<bool> IsValidUserAsync(Users users);
+        Task<bool> IsValidUserAsync(User users);
 
-        UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
+        UserRefreshToken AddUserRefreshTokens(UserRefreshToken user);
 
-        UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken);
+        UserRefreshToken GetSavedRefreshTokens(string username, string refreshtoken);
 
         void DeleteUserRefreshTokens(string username, string refreshToken);
 
-        int SaveCommit();
+        void SaveCommit();
     }
 }

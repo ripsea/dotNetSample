@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Models.Common
 {
-    internal class BaseEntity
+    public class BaseModel
     {
         public Guid Id { get; set; }
         public DateTime DateCreated { get; set; }

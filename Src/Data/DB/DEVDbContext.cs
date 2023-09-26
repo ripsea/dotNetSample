@@ -17,8 +17,13 @@ namespace Data.DB
             //when "Enable-Migrations" enabled, initializer replaced by Migrations/Configuation.cs
         }
 
-        //Adding Domain Classes as DbSet
-        public virtual DbSet<UserRefreshTokens> UserRefreshTokens { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            new DEVDbInitializer(modelBuilder).Seed();
+        }
 
+        public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

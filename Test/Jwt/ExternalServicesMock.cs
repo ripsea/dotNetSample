@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace JwtTest
 {
-    internal class ExternalServicesMock
+    public class ExternalServicesMock
     {
         public Mock<IJWTManagerRepository> JWTManagerRepository { get; }
         public Mock<IUserServiceRepository> UserServiceRepository { get; }

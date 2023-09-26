@@ -1,5 +1,6 @@
 ﻿using Data.DB;
 using Data.Entities;
+using Data.Repositories.Base;
 using Microsoft.AspNetCore.Identity;
 using System;
 
@@ -7,46 +8,54 @@ namespace Services.Models.Repositories
 {
     public class UserServiceRepository : IUserServiceRepository
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly DEVDbContext _db;
+        private readonly RepositoryWrapper _repo;
 
-        public UserServiceRepository(UserManager<IdentityUser> userManager, DEVDbContext db)
+        public UserServiceRepository(RepositoryWrapper repo)
         {
-            this._userManager = userManager;
-            this._db = db;
+            this._repo = repo;
         }
 
-        public UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user)
+        public UserRefreshToken AddUserRefreshTokens(UserRefreshToken user)
         {
-            _db.UserRefreshTokens.Add(user);
+            _repo.UserRefreshToken.Create(user);
             return user;
         }
 
         public void DeleteUserRefreshTokens(string username, string refreshToken)
         {
-            var item = _db.UserRefreshTokens.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken);
+            var item = _repo.UserRefreshToken
+                .FindAll()
+                .FirstOrDefault(x => 
+                    x.User.Name == username &&
+                    x.RefreshToken == refreshToken);
             if (item != null)
             {
-                _db.UserRefreshTokens.Remove(item);
+                _repo.UserRefreshToken.Delete(item);
             }
         }
 
-        public UserRefreshTokens GetSavedRefreshTokens(string username, string refreshToken)
+        public UserRefreshToken GetSavedRefreshTokens(string username, string refreshToken)
         {
-            return _db.UserRefreshTokens.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken && x.IsActive == true);
+            return _repo.UserRefreshToken
+                .FindAll()
+                .FirstOrDefault(
+                    x => x.User.Name == username && 
+                    x.RefreshToken == refreshToken && x.IsActive == true);
         }
 
-        public int SaveCommit()
+        public void SaveCommit()
         {
-            return _db.SaveChanges();
+            _repo.Save();
         }
 
-        public async Task<bool> IsValidUserAsync(Users users)
+        public async Task<bool> IsValidUserAsync(User user)
         {
-            var u = _userManager.Users.FirstOrDefault(o => o.UserName == users.Name);
-            var result = await _userManager.CheckPasswordAsync(u, users.Password);
-            return result;
+            var repoUser =  _repo.User
+                .FindByCondition(x => x.Name == user.Name && 
+                x.Password == user.Password);
 
+            if (repoUser!=null) { return  true; }
+            return false;
         }
     }
 }

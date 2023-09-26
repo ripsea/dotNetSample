@@ -55,7 +55,7 @@ namespace Jwt.Controllers
             }
 
             // saving refresh token to the db
-            UserRefreshTokens obj = new UserRefreshTokens
+            UserRefreshToken obj = new UserRefreshToken
             {
                 RefreshToken = token.Refresh_Token,
                 UserName = usersdata.Name
@@ -90,7 +90,7 @@ namespace Jwt.Controllers
             }
 
             // saving refresh token to the db
-            UserRefreshTokens obj = new UserRefreshTokens
+            UserRefreshToken obj = new UserRefreshToken
             {
                 RefreshToken = newJwtToken.Refresh_Token,
                 UserName = username
