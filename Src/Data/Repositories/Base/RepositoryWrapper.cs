@@ -13,31 +13,21 @@ namespace Data.Repositories.Base
         private DEVDbContext _repoContext;
         private IUserRepository _user;
         private IUserRefreshTokenRepository _userRefreshToken;
-        public IUserRepository User
+
+        public RepositoryWrapper(
+            DEVDbContext repoContext, 
+            IUserRepository user, 
+            IUserRefreshTokenRepository userRefreshToken) 
         {
-            get
-            {
-                if (_user == null)
-                {
-                    _user = new UserRepository(_repoContext);
-                }
-                return _user;
-            }
-        }
-        public IUserRefreshTokenRepository UserRefreshToken
-        {
-            get
-            {
-                if (_userRefreshToken == null)
-                {
-                    _userRefreshToken = new UserRefreshTokenRepository(_repoContext);
-                }
-                return _userRefreshToken;
-            }
+            _repoContext = repoContext;
+            _user = user;
+            _userRefreshToken = userRefreshToken;
         }
 
-        internal RepositoryWrapper(DEVDbContext repositoryContext) => 
-            _repoContext = repositoryContext;
+        public IUserRepository User => _user;
+        
+        public IUserRefreshTokenRepository UserRefreshToken=> _userRefreshToken;
+
         public void Save()
         {
             _repoContext.SaveChanges();

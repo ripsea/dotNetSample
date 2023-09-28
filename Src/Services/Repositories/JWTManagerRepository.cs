@@ -15,17 +15,17 @@ namespace Services.Models.Repositories
         {
             this.iconfiguration = iconfiguration;
         }
-        public Tokens GenerateToken(string userName)
+        public TokenDto GenerateToken(string userName)
         {
             return GenerateJWTTokens(userName);
         }
 
-        public Tokens GenerateRefreshToken(string username)
+        public TokenDto GenerateRefreshToken(string username)
         {
             return GenerateJWTTokens(username);
         }
 
-        public Tokens GenerateJWTTokens(string userName)
+        public TokenDto GenerateJWTTokens(string userName)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Services.Models.Repositories
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var refreshToken = GenerateRefreshToken();
-                return new Tokens { Access_Token = tokenHandler.WriteToken(token), Refresh_Token = refreshToken };
+                return new TokenDto { Access_Token = tokenHandler.WriteToken(token), Refresh_Token = refreshToken };
             }
             catch (Exception ex)
             {

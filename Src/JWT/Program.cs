@@ -1,5 +1,7 @@
 using Data.DB;
+using Data.Repositories;
 using Data.Repositories.Base;
+using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -21,12 +23,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContextPool<DEVDbContext>(
-    options
-        => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection")));
 
-/*
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     options => {
         options.Password.RequireUppercase = true; // on production add more secured options
@@ -34,7 +31,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
         options.SignIn.RequireConfirmedEmail = true;
     }).AddEntityFrameworkStores<DEVDbContext>().AddDefaultTokenProviders();
 
-*/
 builder.Services.AddAuthentication(x => {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,9 +60,16 @@ builder.Services.AddAuthentication(x => {
     };
 });
 
-builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+builder.Services.AddTransient<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();
 builder.Services.AddScoped<IUserServiceRepository, UserServiceRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
+builder.Services.AddDbContextPool<DEVDbContext>(
+    options
+        => options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddControllers();
 
 var app = builder.Build();

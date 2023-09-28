@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Models.Repositories;
 using Services.Models;
+using Azure.Core;
 
 namespace Jwt.Controllers
 {
@@ -38,7 +39,7 @@ namespace Jwt.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> AuthenticateAsync(Users usersdata)
+        public async Task<IActionResult> AuthenticateAsync(UserDto usersdata)
         {
             var validUser = await userServiceRepository.IsValidUserAsync(usersdata);
 
@@ -54,22 +55,26 @@ namespace Jwt.Controllers
                 return Unauthorized("Invalid Attempt!");
             }
 
-            // saving refresh token to the db
-            UserRefreshToken obj = new UserRefreshToken
-            {
-                RefreshToken = token.Refresh_Token,
-                UserName = usersdata.Name
-            };
-
-            userServiceRepository.AddUserRefreshTokens(obj);
+            userServiceRepository.AddUserRefreshTokens(token);
             userServiceRepository.SaveCommit();
             return Ok(token);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("refresh")]
-        public IActionResult Refresh(Tokens token)
+        [Route("addToken")]
+        public IActionResult AddToken(TokenDto token)
+        {
+            userServiceRepository.AddUserRefreshTokens(token);
+            userServiceRepository.SaveCommit();
+            return Ok(token);
+
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("refreshToken")]
+        public IActionResult Refresh(TokenDto token)
         {
             var principal = jWTManager.GetPrincipalFromExpiredToken(token.Access_Token);
             var username = principal.Identity?.Name;
@@ -89,15 +94,9 @@ namespace Jwt.Controllers
                 return Unauthorized("Invalid attempt!");
             }
 
-            // saving refresh token to the db
-            UserRefreshToken obj = new UserRefreshToken
-            {
-                RefreshToken = newJwtToken.Refresh_Token,
-                UserName = username
-            };
 
             userServiceRepository.DeleteUserRefreshTokens(username, token.Refresh_Token);
-            userServiceRepository.AddUserRefreshTokens(obj);
+            userServiceRepository.AddUserRefreshTokens(newJwtToken);
             userServiceRepository.SaveCommit();
 
             return Ok(newJwtToken);

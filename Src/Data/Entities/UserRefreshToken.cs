@@ -10,7 +10,7 @@ namespace Data.Entities
         public string RefreshToken { get; set; }
         public bool IsActive { get; set; } = true;
 
-        [ForeignKey(nameof(User))]
+        //[ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
         public User? User { get; set; }
     }

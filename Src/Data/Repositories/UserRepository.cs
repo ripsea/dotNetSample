@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    internal class UserRepository : 
+    public class UserRepository : 
         RepositoryBase<User>, 
         IUserRepository
     {

@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Data.Repositories.Base;
+using Moq;
 using Services.Models.Repositories;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace JwtTest
         public ExternalServicesMock()
         {
             JWTManagerRepository = new Mock<IJWTManagerRepository>();
-            UserServiceRepository = new Mock<IUserServiceRepository>(); 
+            UserServiceRepository = new Mock<IUserServiceRepository>();
         }
 
         /// <summary>

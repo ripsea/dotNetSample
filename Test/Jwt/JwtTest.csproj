@@ -20,7 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\JWT\Jwt.csproj" />
+    <ProjectReference Include="..\..\Src\Data\Data.csproj" />
+    <ProjectReference Include="..\..\Src\JWT\Jwt.csproj">
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Src\Services\Services.csproj">
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

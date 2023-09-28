@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    internal class UserRefreshTokenRepository : 
+    public class UserRefreshTokenRepository : 
         RepositoryBase<UserRefreshToken>, 
         IUserRefreshTokenRepository
     {
-        public UserRefreshTokenRepository(DEVDbContext repositoryContext) : 
+        public UserRefreshTokenRepository(
+            DEVDbContext repositoryContext) : 
             base(repositoryContext)
         {
         }

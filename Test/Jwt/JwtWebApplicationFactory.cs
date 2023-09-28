@@ -20,8 +20,8 @@ namespace JwtTest
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("IntegrationTesting");
-            base.ConfigureWebHost(builder);
+            //builder.UseEnvironment("IntegrationTesting");
+            //base.ConfigureWebHost(builder);
 
             builder
                 .ConfigureServices(services =>
