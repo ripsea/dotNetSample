@@ -19,7 +19,8 @@ namespace JwtTest
         [Test]
         public async Task GetTemperatureTest()
         {
-            UserDto user = new UserDto() { Name = "iris", Password = "iris" };
+            UserDto user = new UserDto() { 
+                 Name = "iris", Password = "iris" };
             var content = new StringContent(
                 JsonSerializer.Serialize(user),
                 Encoding.UTF8,
@@ -27,21 +28,17 @@ namespace JwtTest
 
             //var ttt = userServiceRepository.IsValidUserAsync(user);
 
-            /*
             var expected = "test";
             ExternalServicesMock.UserServiceRepository
-                .Setup(x => x.)
-                .ReturnsAsync(expected);
-            */
-            /*
-
+                .Setup(x => x.IsValidUserAsync(user))
+                .ReturnsAsync(true);
 
             var client = GetClient();
 
             var response = await client.PostAsync("/api/users/authenticate", content);
             var responseMessage = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseMessage);
-            */
+
             //Assert.AreEqual(expected, responseMessage);
             //ExternalServicesMock.TemperatureApiClient.Verify(x => x.GetTemperatureAsync(), Times.Once);
         }

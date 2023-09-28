@@ -21,7 +21,6 @@ namespace Services.Models.Repositories
         {
             UserRefreshToken ttt = new UserRefreshToken() { RefreshToken="abc"};
             _repo.UserRefreshToken.Create(ttt);
-            //_repo.Create(ttt);
             return ttt;
         }
 
@@ -29,7 +28,6 @@ namespace Services.Models.Repositories
             string username, 
             string refreshToken)
         {
-            /*
             var item = _repo.UserRefreshToken
                 .FindAll()
                 .FirstOrDefault(x => 
@@ -39,38 +37,34 @@ namespace Services.Models.Repositories
             {
                 _repo.UserRefreshToken.Delete(item);
             }
-            */
         }
 
         public UserRefreshToken GetSavedRefreshTokens(
             string username, 
             string refreshToken)
         {
-            /*
             return _repo.UserRefreshToken
                 .FindAll()
                 .FirstOrDefault(
                     x => x.User.Name == username && 
                     x.RefreshToken == refreshToken && x.IsActive == true);
-            */
-            return null;
         }
 
         public void SaveCommit()
         {
             _repo.Save();
-            //_repo.SaveChanges();
         }
 
         public async Task<bool> IsValidUserAsync(UserDto user)
         {
-            /*
-            var repoUser =  _repo.User
-                .FindByCondition(x => x.Name == user.Name && 
-                x.Password == user.Password);
+            var repoUser =  
+                _repo.User
+                .FindByCondition(
+                    x => x.Name == user.Name && 
+                    x.Password == user.Password)
+                ;
 
-            if (repoUser!=null) { return  true; }
-            */
+            if (repoUser.Any()) { return true; }
             return false;
         }
     }

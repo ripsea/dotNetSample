@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Models.Repositories;
 using Services.Models;
 using Azure.Core;
+using Data.DB;
 
 namespace Jwt.Controllers
 {
@@ -17,7 +18,8 @@ namespace Jwt.Controllers
 
         public UsersController(
             IJWTManagerRepository jWTManager, 
-            IUserServiceRepository userServiceRepository)
+            IUserServiceRepository userServiceRepository
+            )
         {
             this.jWTManager = jWTManager;
             this.userServiceRepository = userServiceRepository;
@@ -28,9 +30,7 @@ namespace Jwt.Controllers
         {
             var users = new List<string>
         {
-            "Satinder Singh",
-            "Amit Sarna",
-            "Davin Jon"
+            "iris iris"
         };
 
             return users;
@@ -41,7 +41,16 @@ namespace Jwt.Controllers
         [Route("authenticate")]
         public async Task<IActionResult> AuthenticateAsync(UserDto usersdata)
         {
-            var validUser = await userServiceRepository.IsValidUserAsync(usersdata);
+            var validUser=true;
+            try
+            {
+                validUser = await userServiceRepository.IsValidUserAsync(usersdata);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
             if (!validUser)
             {
@@ -76,11 +85,15 @@ namespace Jwt.Controllers
         [Route("refreshToken")]
         public IActionResult Refresh(TokenDto token)
         {
-            var principal = jWTManager.GetPrincipalFromExpiredToken(token.Access_Token);
+            var principal = 
+                jWTManager
+                .GetPrincipalFromExpiredToken(token.Access_Token);
             var username = principal.Identity?.Name;
 
             //retrieve the saved refresh token from database
-            var savedRefreshToken = userServiceRepository.GetSavedRefreshTokens(username, token.Refresh_Token);
+            var savedRefreshToken = 
+                userServiceRepository
+                .GetSavedRefreshTokens(username, token.Refresh_Token);
 
             if (savedRefreshToken.RefreshToken != token.Refresh_Token)
             {
