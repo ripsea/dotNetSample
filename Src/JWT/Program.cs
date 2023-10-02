@@ -2,8 +2,10 @@ using Data.DB;
 using Data.Repositories;
 using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
+using Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,9 +34,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     }).AddEntityFrameworkStores<DEVDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(x => {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o => {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(
+    o => {
     var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
     o.SaveToken = true;
     o.TokenValidationParameters = new TokenValidationParameters
@@ -60,6 +63,8 @@ builder.Services.AddAuthentication(x => {
     };
 });
 
+builder.Services.AddScoped<IMapService, MapService>();
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();
 builder.Services.AddScoped<IUserServiceRepository, UserServiceRepository>();

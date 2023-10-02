@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Models.Repositories;
 using Services.Models;
-using Azure.Core;
 using Data.DB;
-
+using JWT.Models;
+using Data.Migrations;
+using AutoMapper;
 namespace Jwt.Controllers
 {
     [Authorize]
@@ -15,14 +16,16 @@ namespace Jwt.Controllers
     {
         private readonly IJWTManagerRepository jWTManager;
         private readonly IUserServiceRepository userServiceRepository;
+        private readonly IMapper mapper;
 
         public UsersController(
             IJWTManagerRepository jWTManager, 
-            IUserServiceRepository userServiceRepository
-            )
+            IUserServiceRepository userServiceRepository,
+            IMapper mapper)
         {
             this.jWTManager = jWTManager;
             this.userServiceRepository = userServiceRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -39,25 +42,19 @@ namespace Jwt.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> AuthenticateAsync(UserDto usersdata)
+        public async Task<IActionResult> AuthenticateAsync(UserViewModel user)
         {
-            var validUser=true;
-            try
-            {
-                validUser = await userServiceRepository.IsValidUserAsync(usersdata);
+            var userDto = this.mapper.Map<UserDto>(user);
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+            var validUser = 
+                await userServiceRepository.IsValidUserAsync(userDto);
 
             if (!validUser)
             {
                 return Unauthorized("Incorrect username or password!");
             }
 
-            var token = jWTManager.GenerateToken(usersdata.Name);
+            var token = jWTManager.GenerateToken(user.Name);
 
             if (token == null)
             {
