@@ -7,6 +7,12 @@ using Data.DB;
 using JWT.Models;
 using Data.Migrations;
 using AutoMapper;
+using AutoMapper.Execution;
+using System.Net;
+using Swashbuckle.Swagger.Annotations;
+using Swashbuckle.Examples;
+using Jwt.Swagger;
+
 namespace Jwt.Controllers
 {
     [Authorize]
@@ -39,9 +45,32 @@ namespace Jwt.Controllers
             return users;
         }
 
+
+        /// <summary>
+        /// 使用者登入認證並取得token
+        /// </summary>
+        /// <param name="user">使用者登入資料</param>
+        /// <returns>A newly TokenDto</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /authenticate
+        ///     {
+        ///        "Name": "iris",
+        ///        "Password": "isapassword"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
+        [SwaggerResponse(HttpStatusCode.OK, "成功", typeof(TokenDto))]
+        //[SwaggerResponse(HttpStatusCode.BadRequest, type: typeof(IEnumerable<ErrorResponse>))]
+        //[SwaggerRequestExample(typeof(UserViewModel), typeof(UserViewModelRequestExample))]
+        //[SwaggerResponseExample(HttpStatusCode.OK, typeof(TokenDto), typeof(TokenDtoResponseExample))]
+        [SwaggerOperation(Tags = new[] { "JWT", "使用者作業" })]
         public async Task<IActionResult> AuthenticateAsync(UserViewModel user)
         {
             var userDto = this.mapper.Map<UserDto>(user);

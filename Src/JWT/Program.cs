@@ -3,6 +3,7 @@ using Data.Repositories;
 using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
 using Jwt;
+using Jwt.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,10 +12,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Services.Models.Repositories;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Configuration;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +29,77 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+#region Swagger
+
+builder.Services.AddSwaggerGen(options =>
+{
+    #region version setting
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "JWT API",
+        Description = "Iris ASP.NET Core Web API for managing JWT items",
+        TermsOfService = new Uri("https://dotblogs.com.tw/irislai"),
+        Contact = new OpenApiContact
+        {
+            Name = "Iris",
+            Url = new Uri("https://dotblogs.com.tw/irislai")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Example License",
+            Url = new Uri("https://example.com/license")
+        }
+    });
+
+    options.SwaggerDoc("v2", 
+        new OpenApiInfo { Title = "Jwt API - V2", Version = "v2" });
+    #endregion
+
+    #region authorization
+    // Authorization
+    options.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization"
+        });
+
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
+            }
+        });
+
+    #endregion
+
+    //提供 Request/Response 的 example
+    options.ExampleFilters();
+
+    //在 class 所標記的 Summary 說明檔，編譯變成 xml 檔，可以讓 Swashbuckle.AspNetCore 套用
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
+//提供 Request/Response 的 example
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+//builder.Services.AddSwaggerExamplesFromAssemblyOf<UserViewModelRequestExample>();
+#endregion
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     options => {

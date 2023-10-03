@@ -28,6 +28,7 @@ namespace Services.Models.Repositories
             string username, 
             string refreshToken)
         {
+            /*
             var item = _repo.UserRefreshToken
                 .FindAll()
                 .FirstOrDefault(x => 
@@ -37,17 +38,22 @@ namespace Services.Models.Repositories
             {
                 _repo.UserRefreshToken.Delete(item);
             }
+            */
+
         }
 
         public UserRefreshToken GetSavedRefreshTokens(
             string username, 
             string refreshToken)
         {
+            /*
             return _repo.UserRefreshToken
                 .FindAll()
                 .FirstOrDefault(
                     x => x.User.Name == username && 
                     x.RefreshToken == refreshToken && x.IsActive == true);
+            */
+            return null;
         }
 
         public void SaveCommit()
