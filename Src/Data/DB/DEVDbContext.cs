@@ -3,11 +3,13 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Web;
 using Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.DB
 {
-    public class DEVDbContext : DbContext
+    public class DEVDbContext : IdentityDbContext<IdentityUser>
     {
         //Constructor calling the DbContext class constructor
 

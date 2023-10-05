@@ -101,12 +101,16 @@ builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 //builder.Services.AddSwaggerExamplesFromAssemblyOf<UserViewModelRequestExample>();
 #endregion
 
+#region Identity
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     options => {
         options.Password.RequireUppercase = true; // on production add more secured options
         options.Password.RequireDigit = true;
         options.SignIn.RequireConfirmedEmail = true;
     }).AddEntityFrameworkStores<DEVDbContext>().AddDefaultTokenProviders();
+
+#endregion
 
 builder.Services.AddAuthentication(x => {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

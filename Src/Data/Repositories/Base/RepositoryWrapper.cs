@@ -1,5 +1,6 @@
 ﻿using Data.DB;
 using Data.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +14,18 @@ namespace Data.Repositories.Base
         private DEVDbContext _repoContext;
         private IUserRepository _user;
         private IUserRefreshTokenRepository _userRefreshToken;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public RepositoryWrapper(
             DEVDbContext repoContext, 
             IUserRepository user, 
-            IUserRefreshTokenRepository userRefreshToken) 
+            IUserRefreshTokenRepository userRefreshToken,
+            UserManager<IdentityUser> userManager) 
         {
             _repoContext = repoContext;
             _user = user;
             _userRefreshToken = userRefreshToken;
+            _userManager = userManager;
         }
 
         public IUserRepository User => _user;
