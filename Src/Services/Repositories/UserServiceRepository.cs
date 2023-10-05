@@ -1,9 +1,11 @@
-﻿using Data.DB;
+﻿using AutoMapper.Internal.Mappers;
+using Data.DB;
 using Data.Entities;
 using Data.Repositories;
 using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Services.AutoMapper;
 using System;
 
 namespace Services.Models.Repositories
@@ -19,9 +21,10 @@ namespace Services.Models.Repositories
 
         public UserRefreshToken AddUserRefreshTokens(TokenDto user)
         {
-            UserRefreshToken ttt = new UserRefreshToken() { RefreshToken="abc"};
-            _repo.UserRefreshToken.Create(ttt);
-            return ttt;
+            UserRefreshToken userRefreshToken = 
+                ObjectMapper.Mapper.Map<UserRefreshToken>(user);
+            _repo.UserRefreshToken.Create(userRefreshToken);
+            return userRefreshToken;
         }
 
         public void DeleteUserRefreshTokens(
