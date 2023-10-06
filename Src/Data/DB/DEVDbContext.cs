@@ -3,13 +3,14 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Web;
 using Data.Entities;
+using Data.Entities.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.DB
 {
-    public class DEVDbContext : IdentityDbContext<IdentityUser>
+    public class DEVDbContext : IdentityDbContext<ApplicationUser>
     {
         //Constructor calling the DbContext class constructor
 
@@ -27,5 +28,6 @@ namespace Data.DB
 
         public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        //public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }

@@ -34,15 +34,20 @@ namespace Services.Models.Repositories
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
-                  {
-                 new Claim(ClaimTypes.Name, userName)
-                  }),
+                      {
+                        new Claim(ClaimTypes.Name, userName)
+                      }),
                     Expires = DateTime.Now.AddMinutes(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
+                    SigningCredentials = 
+                        new SigningCredentials(
+                            new SymmetricSecurityKey(tokenKey), 
+                            SecurityAlgorithms.HmacSha256Signature)
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var refreshToken = GenerateRefreshToken();
-                return new TokenDto { Access_Token = tokenHandler.WriteToken(token), Refresh_Token = refreshToken };
+                return new TokenDto { 
+                    Access_Token = tokenHandler.WriteToken(token), 
+                    Refresh_Token = refreshToken };
             }
             catch (Exception ex)
             {
@@ -75,9 +80,18 @@ namespace Services.Models.Repositories
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            var principal = 
+                tokenHandler.ValidateToken(
+                    token, 
+                    tokenValidationParameters, 
+                    out SecurityToken securityToken);
+
             JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+
+            if (jwtSecurityToken == null 
+                || !jwtSecurityToken.Header.Alg.Equals(
+                    SecurityAlgorithms.HmacSha256, 
+                    StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new SecurityTokenException("Invalid token");
             }

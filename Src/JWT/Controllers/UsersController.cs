@@ -12,6 +12,8 @@ using System.Net;
 using Swashbuckle.Swagger.Annotations;
 using Swashbuckle.Examples;
 using Jwt.Swagger;
+using Jwt.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Jwt.Controllers
 {
@@ -56,7 +58,7 @@ namespace Jwt.Controllers
         ///
         ///     POST /authenticate
         ///     {
-        ///        "Name": "iris",
+        ///        "UserName": "iris",
         ///        "Password": "isapassword"
         ///     }
         ///
@@ -71,7 +73,7 @@ namespace Jwt.Controllers
         //[SwaggerRequestExample(typeof(UserViewModel), typeof(UserViewModelRequestExample))]
         //[SwaggerResponseExample(HttpStatusCode.OK, typeof(TokenDto), typeof(TokenDtoResponseExample))]
         [SwaggerOperation(Tags = new[] { "JWT", "使用者作業" })]
-        public async Task<IActionResult> AuthenticateAsync(UserViewModel user)
+        public async Task<IActionResult> AuthenticateAsync(LoginViewModel user)
         {
             var userDto = this.mapper.Map<UserDto>(user);
 
@@ -95,15 +97,51 @@ namespace Jwt.Controllers
             return Ok(token);
         }
 
+        /// <summary>
+        /// 使用者註冊
+        /// </summary>
+        /// <param name="model">使用者註冊資料</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /register
+        ///     {
+        ///        "UserName": "iris",
+        ///        "Password": "isapassword",
+        ///        "Email": "test@test.com"
+        ///     }
+        ///
+        /// </remarks>
         [AllowAnonymous]
         [HttpPost]
-        [Route("addToken")]
-        public IActionResult AddToken(TokenDto token)
+        [Route("register")]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            userServiceRepository.AddUserRefreshTokens(token);
-            userServiceRepository.SaveCommit();
-            return Ok(token);
+            var ifExisted = 
+                await userServiceRepository.IsUserNameExistedAsync(model.Username);
 
+            if (ifExisted)
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new Response { Status = "Error", 
+                        Message = "User already exists!" });
+
+            var result = await userServiceRepository.CreateUserAsync(
+                username: model.Username,
+                password: model.Password,
+                email: model.Email
+                );
+
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    new Response { 
+                        Status = "Error", 
+                        Message = "User creation failed! Please check user details and try again." });
+
+            return Ok(
+                new Response { 
+                    Status = "Success", 
+                    Message = "User created successfully!" });
         }
 
         [AllowAnonymous]

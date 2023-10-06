@@ -14,18 +14,15 @@ namespace Data.Repositories.Base
         private DEVDbContext _repoContext;
         private IUserRepository _user;
         private IUserRefreshTokenRepository _userRefreshToken;
-        private readonly UserManager<IdentityUser> _userManager;
 
         public RepositoryWrapper(
             DEVDbContext repoContext, 
             IUserRepository user, 
-            IUserRefreshTokenRepository userRefreshToken,
-            UserManager<IdentityUser> userManager) 
+            IUserRefreshTokenRepository userRefreshToken) 
         {
             _repoContext = repoContext;
             _user = user;
             _userRefreshToken = userRefreshToken;
-            _userManager = userManager;
         }
 
         public IUserRepository User => _user;

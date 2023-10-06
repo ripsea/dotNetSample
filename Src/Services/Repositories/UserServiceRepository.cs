@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Internal.Mappers;
 using Data.DB;
 using Data.Entities;
+using Data.Entities.Auth;
 using Data.Repositories;
 using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
@@ -13,10 +14,13 @@ namespace Services.Models.Repositories
     public class UserServiceRepository : IUserServiceRepository
     {
         private readonly IRepositoryWrapper _repo;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserServiceRepository(IRepositoryWrapper repo)
+        public UserServiceRepository(IRepositoryWrapper repo,
+            UserManager<ApplicationUser> userManager)
         {
             this._repo = repo;
+            this._userManager = userManager;
         }
 
         public UserRefreshToken AddUserRefreshTokens(TokenDto user)
@@ -66,15 +70,41 @@ namespace Services.Models.Repositories
 
         public async Task<bool> IsValidUserAsync(UserDto user)
         {
-            var repoUser =  
+            var repoUser =
                 _repo.User
                 .FindByCondition(
-                    x => x.Name == user.Name && 
+                    x => x.Name == user.Name &&
                     x.Password == user.Password)
                 ;
 
             if (repoUser.Any()) { return true; }
             return false;
         }
+
+        public async Task<bool> IsUserNameExistedAsync(string username)
+        {
+            var repoUser =
+                await _userManager.FindByNameAsync(username);
+
+            if (repoUser==null) { return false; }
+            return true;
+        }
+
+        public async Task<IdentityResult> CreateUserAsync(
+            string username, 
+            string email,
+            string password)
+        {
+            ApplicationUser user = new()
+            {
+                Email = email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = username
+            };
+
+            return await _userManager.CreateAsync(user, password);
+        }
+
+
     }
 }

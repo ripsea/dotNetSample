@@ -1,4 +1,5 @@
 using Data.DB;
+using Data.Entities.Auth;
 using Data.Repositories;
 using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
@@ -103,12 +104,15 @@ builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
 #region Identity
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>
+    (
     options => {
         options.Password.RequireUppercase = true; // on production add more secured options
         options.Password.RequireDigit = true;
         options.SignIn.RequireConfirmedEmail = true;
-    }).AddEntityFrameworkStores<DEVDbContext>().AddDefaultTokenProviders();
+    })
+    .AddEntityFrameworkStores<DEVDbContext>()
+    .AddDefaultTokenProviders();
 
 #endregion
 
