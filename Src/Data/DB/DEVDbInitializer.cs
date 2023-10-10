@@ -20,8 +20,8 @@ namespace Data.DB
 
         internal void Seed()
         {
-            modelBuilder.Entity<User>().HasData(
-                new User() { Id= Guid.NewGuid(), 
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity() { Id= Guid.NewGuid(), 
                     Name = "iris", 
                     Password = "iris" });
         }

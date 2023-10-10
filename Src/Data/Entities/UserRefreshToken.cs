@@ -12,6 +12,6 @@ namespace Data.Entities
 
         //[ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
-        public User? User { get; set; }
+        public UserEntity? User { get; set; }
     }
 }

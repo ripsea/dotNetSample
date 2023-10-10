@@ -27,7 +27,6 @@ namespace Data.DB
         }
 
         public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        //public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        //public virtual DbSet<User> Users { get; set; }
     }
 }

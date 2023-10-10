@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories.Interfaces
 {
-    public interface IUserRepository : IRepositoryBase<User>
+    public interface IUserRepository : IRepositoryBase<UserEntity>
     {
     }
 }

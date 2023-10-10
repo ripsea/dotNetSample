@@ -17,6 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jwt", "Src\JWT\Jwt.csproj", "{B2C74746-B75B-4CA9-8CD8-0F2B4764AC01}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0FA56C8A-6754-4389-8BEB-60E37596265C} = {0FA56C8A-6754-4389-8BEB-60E37596265C}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Src\Services\Services.csproj", "{72FBFEB9-D8D4-42EC-9E44-7A7EA005004A}"
 EndProject
@@ -24,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Src\Data\Data.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurnKeyFilesParse", "Src\TurnKeyFilesParse\TurnKeyFilesParse.csproj", "{EB30B6A3-C867-4FBF-9092-E358362E316F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtTest", "Test\Jwt\JwtTest.csproj", "{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtTest", "Test\Jwt\JwtTest.csproj", "{0B4C9103-4E09-4DF3-91D9-9AB5D8554FE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

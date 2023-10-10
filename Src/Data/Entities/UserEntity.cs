@@ -10,7 +10,7 @@ namespace Data.Entities
 {
 
     [Table("User")]
-    public class User : EntityBase
+    public class UserEntity : EntityBase
     {
         [Required]
         public string Name { get; set; }

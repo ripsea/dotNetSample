@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Entities;
+using Data.Entities.Auth;
 using Services.Models;
 
 namespace Services.AutoMapper
@@ -8,10 +9,8 @@ namespace Services.AutoMapper
     {
         public MapperService()
         {
-            CreateMap<UserRefreshToken, TokenDto>()
+            CreateMap<ApplicationUser, User>()
                 .ReverseMap();
-
-            // All other mappings goes here
         }
     }
 }

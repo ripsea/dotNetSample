@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Entities.Auth;
 using Microsoft.AspNetCore.Identity;
 
 namespace Services.Models.Repositories
@@ -6,17 +7,15 @@ namespace Services.Models.Repositories
     public interface IUserServiceRepository
     {
 
-        Task<bool> IsValidUserAsync(UserDto users);
+        Task<TokenDto> GetRefreshToken(string username);
+        Task<User> AddRefreshToken(string name);
 
-        UserRefreshToken AddUserRefreshTokens(TokenDto user);
-
-        UserRefreshToken GetSavedRefreshTokens(string username, string refreshtoken);
-
-        void DeleteUserRefreshTokens(string username, string refreshToken);
+        Task RevokeRefreshToken(string username);
 
         void SaveCommit();
 
-        Task<bool> IsUserNameExistedAsync(string username);
+        Task<bool> LoginAsync(string name, string password);
+        Task<User> GetUserAsync(string username);
         Task<IdentityResult> CreateUserAsync(
             string username,
             string email,

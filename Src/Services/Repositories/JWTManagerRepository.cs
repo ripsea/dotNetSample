@@ -27,32 +27,32 @@ namespace Services.Models.Repositories
 
         public TokenDto GenerateJWTTokens(string userName)
         {
-            try
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenKey = Encoding.UTF8.GetBytes(iconfiguration["JWT:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenKey = Encoding.UTF8.GetBytes(iconfiguration["JWT:Key"]);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                      {
+                Subject = new ClaimsIdentity(new Claim[]
+                    {
                         new Claim(ClaimTypes.Name, userName)
-                      }),
-                    Expires = DateTime.Now.AddMinutes(1),
-                    SigningCredentials = 
-                        new SigningCredentials(
-                            new SymmetricSecurityKey(tokenKey), 
-                            SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var refreshToken = GenerateRefreshToken();
-                return new TokenDto { 
-                    Access_Token = tokenHandler.WriteToken(token), 
-                    Refresh_Token = refreshToken };
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+                        //Claims.Add(new Claim(ClaimTypes.Role, userRole));
+                    }),
+                Expires = DateTime.Now.AddMinutes(1),
+                SigningCredentials = 
+                    new SigningCredentials(
+                        new SymmetricSecurityKey(tokenKey), 
+                        SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var refreshToken = GenerateRefreshToken();
+
+            _ = int.TryParse(iconfiguration["JWT:RefreshTokenValidityInDays"],
+                out int refreshTokenValidityInDays);
+
+            return new TokenDto { 
+                Access_Token = tokenHandler.WriteToken(token), 
+                Refresh_Token = refreshToken,
+                RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
+            };
         }
 
         public string GenerateRefreshToken()

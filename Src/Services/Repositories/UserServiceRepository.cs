@@ -8,86 +8,74 @@ using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Services.AutoMapper;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Web;
 
 namespace Services.Models.Repositories
 {
     public class UserServiceRepository : IUserServiceRepository
     {
         private readonly IRepositoryWrapper _repo;
+        private readonly IJWTManagerRepository _jwtManagerRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public UserServiceRepository(IRepositoryWrapper repo,
+            IJWTManagerRepository jwtManagerRepository,
             UserManager<ApplicationUser> userManager)
         {
             this._repo = repo;
+            this._jwtManagerRepository = jwtManagerRepository;
             this._userManager = userManager;
         }
 
-        public UserRefreshToken AddUserRefreshTokens(TokenDto user)
+        public async Task<TokenDto> GetRefreshToken(string username)
         {
-            UserRefreshToken userRefreshToken = 
-                ObjectMapper.Mapper.Map<UserRefreshToken>(user);
-            _repo.UserRefreshToken.Create(userRefreshToken);
-            return userRefreshToken;
-        }
-
-        public void DeleteUserRefreshTokens(
-            string username, 
-            string refreshToken)
-        {
-            /*
-            var item = _repo.UserRefreshToken
-                .FindAll()
-                .FirstOrDefault(x => 
-                    x.User.Name == username &&
-                    x.RefreshToken == refreshToken);
-            if (item != null)
+            //retrieve the saved refresh token from database
+            ApplicationUser appUser = await _userManager.FindByNameAsync(username);
+            TokenDto token = new TokenDto()
             {
-                _repo.UserRefreshToken.Delete(item);
-            }
-            */
-
+                Refresh_Token = appUser.RefreshToken,
+                RefreshTokenExpiryTime = appUser.RefreshTokenExpiryTime
+            };
+            return token;
         }
 
-        public UserRefreshToken GetSavedRefreshTokens(
-            string username, 
-            string refreshToken)
+        public async Task<User> AddRefreshToken(string name)
         {
-            /*
-            return _repo.UserRefreshToken
-                .FindAll()
-                .FirstOrDefault(
-                    x => x.User.Name == username && 
-                    x.RefreshToken == refreshToken && x.IsActive == true);
-            */
-            return null;
+            await RevokeRefreshToken(name);
+            ApplicationUser appUser = await _userManager.FindByNameAsync(name);
+            var tokenDto = _jwtManagerRepository.GenerateRefreshToken(name);
+            appUser.RefreshToken = tokenDto.Refresh_Token;
+            appUser.RefreshTokenExpiryTime = tokenDto.RefreshTokenExpiryTime;
+            await _userManager.UpdateAsync(appUser);
+
+            return ObjectMapper.Mapper.Map<User>(appUser);
         }
+
+        public async Task RevokeRefreshToken(
+            string username)
+        {
+            ApplicationUser appUser = await _userManager.FindByNameAsync(username);
+            appUser.RefreshToken = null;
+            _userManager.UpdateAsync(appUser);
+        }
+
 
         public void SaveCommit()
         {
             _repo.Save();
         }
 
-        public async Task<bool> IsValidUserAsync(UserDto user)
+        public async Task<bool> LoginAsync(string name, string password)
         {
-            var repoUser =
-                _repo.User
-                .FindByCondition(
-                    x => x.Name == user.Name &&
-                    x.Password == user.Password)
-                ;
-
-            if (repoUser.Any()) { return true; }
-            return false;
+            ApplicationUser appUser = await _userManager.FindByNameAsync(name);
+            return await _userManager.CheckPasswordAsync(appUser, password);
         }
 
-        public async Task<bool> IsUserNameExistedAsync(string username)
+        public async Task<User> GetUserAsync(string name)
         {
-            var repoUser =
-                await _userManager.FindByNameAsync(username);
-
-            if (repoUser==null) { return false; }
-            return true;
+            ApplicationUser appUser = await _userManager.FindByNameAsync(name);
+            return ObjectMapper.Mapper.Map<User>(appUser);
         }
 
         public async Task<IdentityResult> CreateUserAsync(

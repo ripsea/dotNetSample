@@ -7,7 +7,7 @@ public class ServiceMappings : Profile
 {
     public ServiceMappings()
     {
-        CreateMap<UserDto, LoginViewModel>()
+        CreateMap<User, LoginViewModel>()
             .ReverseMap();
 
         // ...其他的對映內容 (使用 CreateMap<> 建立下一組)

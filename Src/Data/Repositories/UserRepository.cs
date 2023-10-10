@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Data.Repositories
 {
     public class UserRepository : 
-        RepositoryBase<User>, 
+        RepositoryBase<UserEntity>, 
         IUserRepository
     {
         public UserRepository(DEVDbContext repositoryContext) : 
