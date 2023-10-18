@@ -121,30 +121,55 @@ builder.Services.AddAuthentication(x => {
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(
     o => {
-    var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
-    o.SaveToken = true;
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false, // on production make it true
-        ValidateAudience = false, // on production make it true
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWT:Issuer"],
-        ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Key),
-        ClockSkew = TimeSpan.Zero
-    };
-    o.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context => {
-            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+
+        o.IncludeErrorDetails = true;
+        var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
             {
-                context.Response.Headers.Add("IS-TOKEN-EXPIRED", "true");
+                ValidateIssuer = false, // on production make it true
+                ValidateAudience = false, // on production make it true
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["JWT:Issuer"],
+                ValidAudience = builder.Configuration["JWT:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Key),
+                ClockSkew = TimeSpan.Zero
+            };
+        o.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context => {
+                    if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                    {
+                        context.Response.Headers.Add("IS-TOKEN-EXPIRED", "true");
+                    }
+                    return Task.CompletedTask;
+                },
+
+            //JwtBearer debug
+            //https://nestenius.se/2023/02/21/troubleshooting-jwtbearer-authentication-problems-in-asp-net-core/
+            OnMessageReceived = msg =>
+            {
+                msg.Request.Headers.TryGetValue("Authorization", out var BearerToken);
+                msg.Request.Headers.TryGetValue("Path", out var RequestPath);
+                if (!string.IsNullOrEmpty(BearerToken))
+                {
+                    Console.WriteLine("Access token");
+                    Console.WriteLine($"URL: {RequestPath}");
+                    Console.WriteLine($"Token: {BearerToken}\r\n");
+                }
+                else
+                {
+                    Console.WriteLine("Access token");
+                    Console.WriteLine("URL: " + RequestPath);
+                    Console.WriteLine("Token: No access token provided\r\n");
+                }
+                return Task.CompletedTask;
             }
-            return Task.CompletedTask;
-        }
-    };
-});
+
+
+        };
+    });
 
 builder.Services.AddScoped<IMapService, MapService>();
 builder.Services.AddAutoMapper(typeof(Program));

@@ -57,7 +57,7 @@ namespace Services.Models.Repositories
         {
             ApplicationUser appUser = await _userManager.FindByNameAsync(username);
             appUser.RefreshToken = null;
-            _userManager.UpdateAsync(appUser);
+            await _userManager.UpdateAsync(appUser);
         }
 
 

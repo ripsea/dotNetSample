@@ -16,6 +16,7 @@ using Jwt.Models;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Jwt.Controllers
 {
@@ -39,6 +40,7 @@ namespace Jwt.Controllers
         }
 
         [HttpGet]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public List<string> Get()
         {
             var users = new List<string>

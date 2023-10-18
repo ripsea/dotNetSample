@@ -36,7 +36,7 @@ namespace Services.Models.Repositories
                         new Claim(ClaimTypes.Name, userName)
                         //Claims.Add(new Claim(ClaimTypes.Role, userRole));
                     }),
-                Expires = DateTime.Now.AddMinutes(1),
+                Expires = DateTime.Now.AddMinutes(10),
                 SigningCredentials = 
                     new SigningCredentials(
                         new SymmetricSecurityKey(tokenKey), 
