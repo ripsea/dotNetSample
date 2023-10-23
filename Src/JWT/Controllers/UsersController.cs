@@ -28,15 +28,17 @@ namespace Jwt.Controllers
         private readonly IJWTManagerRepository jWTManager;
         private readonly IUserServiceRepository userServiceRepository;
         private readonly IMapper mapper;
-
+        private readonly ILogger<UsersController> _logger;
         public UsersController(
             IJWTManagerRepository jWTManager, 
             IUserServiceRepository userServiceRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<UsersController> logger)
         {
             this.jWTManager = jWTManager;
             this.userServiceRepository = userServiceRepository;
             this.mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -96,6 +98,7 @@ namespace Jwt.Controllers
 
             user = await userServiceRepository.AddRefreshToken(login.Name);
             user.AccessToken = token.Access_Token;
+            _logger.LogInformation($"this is {login.Name}'s token {user.AccessToken}");
             return Ok(user);
         }
 
