@@ -28,18 +28,6 @@ using Serilog.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Log.Logger = new LoggerConfiguration()
-//    .MinimumLevel.Information()
-//    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-//    .Enrich.FromLogContext()
-//    .WriteTo.Console()
-//    .WriteTo.File("logs/log-.log",
-//        rollingInterval: RollingInterval.Hour, // 每小時一個檔案
-//        retainedFileCountLimit: 24 * 30 // 最多保留 30 天份的 Log 檔案
-//    )
-//    //.CreateLogger(); //for Two-stage initialization; replace by CreateBootstrapLogger()
-//    .CreateBootstrapLogger();
-
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
 //    //.CreateLogger(); //for Two-stage initialization; replace by CreateBootstrapLogger()
@@ -52,6 +40,7 @@ try
 
     // Add services to the container.
     #region Services
+
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
@@ -213,30 +202,7 @@ try
 
     #region host
     builder.Host.UseSerilog();
-    //replace by below content of builder.Host.UseSerilog
-    //1.會要這麼麻煩把 WriteTo 的內容再寫一次
-    //是因為第一階段的 Log 轉移給第二階段之後就會被完全替換掉，變成新的。
-    //所以如果沒有再寫一次的話就會什麼都不輸出...
-    //2.第二階段開始才可以使用設定檔, 因此相關設定改到appsetting.json
-   // builder.Host.UseSerilog((context, services, configuration) 
-   //     => configuration
-   //     .ReadFrom.Services(services)
-   //     .Enrich.FromLogContext()
-   //     //.WriteTo.Console()
-   //     //    .WriteTo.File("logs/log-.log",
-   //     //        rollingInterval: RollingInterval.Hour, // 每小時一個檔案
-   //     //        retainedFileCountLimit: 24 * 30 // 最多保留 30 天份的 Log 檔案
-   //     //        )
-   ////     .WriteTo.Logger(
-   ////         loggerConfiguration => loggerConfiguration
-   ////         .Filter.ByIncludingOnly(Matching.FromSource("Jwt.Controllers.UsersController"))
-   ////         .WriteTo.File("logs/api-.log",
-   ////             rollingInterval: RollingInterval.Hour, // 每小時一個檔案
-   ////             retainedFileCountLimit: 24 * 30 // 最多保留 30 天份的 Log 檔案
-   ////     )
-   ////)
-   //     );
-   #endregion
+    #endregion
 
     #region app
     var app = builder.Build();
@@ -258,6 +224,7 @@ try
     #endregion
 
     return 0;
+
 }
 catch (Exception ex)
 {
