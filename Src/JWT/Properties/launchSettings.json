@@ -9,17 +9,17 @@
     }
   },
   "profiles": {
-    "JWT": {
+    "Kestrel-Staging": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "api/Users",
       "applicationUrl": "https://localhost:7293;http://localhost:5082",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       }
     },
-    "IIS Express": {
+    "IIS Express-Development": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",
