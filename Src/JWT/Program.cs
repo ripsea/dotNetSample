@@ -38,7 +38,6 @@ try
     Log.Information("Starting web host");
 
     // Add services to the container.
-
     #region Services
 
     builder.Services.AddControllers();
@@ -203,9 +202,8 @@ try
     #region host
     builder.Host.UseSerilog();
 
+
    #endregion
-
-
 
     #region app
     var app = builder.Build();
