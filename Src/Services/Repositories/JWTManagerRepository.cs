@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Services.Configurations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -9,26 +10,26 @@ namespace Services.Models.Repositories
 {
     public class JWTManagerRepository : IJWTManagerRepository
     {
-        private readonly IConfiguration iconfiguration;
+        private readonly JwtConfigOptions _jwtConfigOptions;
 
-        public JWTManagerRepository(IConfiguration iconfiguration)
+        public JWTManagerRepository(JwtConfigOptions jwtConfigOptions)
         {
-            this.iconfiguration = iconfiguration;
+            this._jwtConfigOptions = jwtConfigOptions;
         }
-        public TokenDto GenerateToken(string userName)
+        public TokenRequest GenerateToken(string userName)
         {
             return GenerateJWTTokens(userName);
         }
 
-        public TokenDto GenerateRefreshToken(string username)
+        public TokenRequest GenerateRefreshToken(string username)
         {
             return GenerateJWTTokens(username);
         }
 
-        public TokenDto GenerateJWTTokens(string userName)
+        public TokenRequest GenerateJWTTokens(string userName)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.UTF8.GetBytes(iconfiguration["JWT:Key"]);
+            var tokenKey = Encoding.UTF8.GetBytes(_jwtConfigOptions.Key);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -45,10 +46,10 @@ namespace Services.Models.Repositories
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var refreshToken = GenerateRefreshToken();
 
-            _ = int.TryParse(iconfiguration["JWT:RefreshTokenValidityInDays"],
+            _ = int.TryParse(_jwtConfigOptions.RefreshTokenValidityInDays,
                 out int refreshTokenValidityInDays);
 
-            return new TokenDto { 
+            return new TokenRequest { 
                 Access_Token = tokenHandler.WriteToken(token), 
                 Refresh_Token = refreshToken,
                 RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
@@ -67,7 +68,7 @@ namespace Services.Models.Repositories
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var Key = Encoding.UTF8.GetBytes(iconfiguration["JWT:Key"]);
+            var Key = Encoding.UTF8.GetBytes(_jwtConfigOptions.Key);
 
             var tokenValidationParameters = new TokenValidationParameters
             {
