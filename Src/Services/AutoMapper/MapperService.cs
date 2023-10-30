@@ -9,7 +9,7 @@ namespace Services.AutoMapper
     {
         public MapperService()
         {
-            CreateMap<ApplicationUser, User>()
+            CreateMap<ApplicationUser, AuthResult>()
                 .ReverseMap();
         }
     }

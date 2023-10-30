@@ -2,7 +2,7 @@
 
 namespace Services.Models
 {
-    public class TokenDto:BaseModel
+    public class TokenRequest:BaseModel
     {
         public string Access_Token { get; set; }
         public string? Refresh_Token { get; set; }

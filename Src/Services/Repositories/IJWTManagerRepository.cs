@@ -4,8 +4,8 @@ namespace Services.Models.Repositories
 {
     public interface IJWTManagerRepository
     {
-        TokenDto GenerateToken(string userName);
-        TokenDto GenerateRefreshToken(string userName);
+        TokenRequest GenerateToken(string userName);
+        TokenRequest GenerateRefreshToken(string userName);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }
