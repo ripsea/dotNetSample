@@ -25,6 +25,7 @@ using System.Text;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
+using Services.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,7 +116,7 @@ try
     //builder.Services.AddSwaggerExamplesFromAssemblyOf<UserViewModelRequestExample>();
     #endregion
 
-    #region Identity
+    #region services-Identity
 
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>
         (
@@ -129,6 +130,7 @@ try
 
     #endregion
 
+    #region services-Authentication
     builder.Services.AddAuthentication(x => {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -183,7 +185,14 @@ try
 
             };
         });
+    #endregion
 
+    #region services-configurations
+    builder.Services.Configure<JwtConfigOptions>(
+        builder.Configuration.GetSection(JwtConfigOptions.JwtConfig));
+    #endregion
+
+    #region services-others
     builder.Services.AddScoped<IMapService, MapService>();
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddTransient<IRepositoryWrapper, RepositoryWrapper>();
@@ -195,7 +204,7 @@ try
         options
             => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")));
-
+    #endregion
     builder.Services.AddControllers();
     #endregion
 

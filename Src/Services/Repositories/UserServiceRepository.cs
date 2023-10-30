@@ -28,11 +28,11 @@ namespace Services.Models.Repositories
             this._userManager = userManager;
         }
 
-        public async Task<TokenDto> GetRefreshToken(string username)
+        public async Task<TokenRequest> GetRefreshToken(string username)
         {
             //retrieve the saved refresh token from database
             ApplicationUser appUser = await _userManager.FindByNameAsync(username);
-            TokenDto token = new TokenDto()
+            TokenRequest token = new TokenRequest()
             {
                 Refresh_Token = appUser.RefreshToken,
                 RefreshTokenExpiryTime = appUser.RefreshTokenExpiryTime
@@ -40,7 +40,7 @@ namespace Services.Models.Repositories
             return token;
         }
 
-        public async Task<User> AddRefreshToken(string name)
+        public async Task<AuthResult> AddRefreshToken(string name)
         {
             await RevokeRefreshToken(name);
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
@@ -49,7 +49,7 @@ namespace Services.Models.Repositories
             appUser.RefreshTokenExpiryTime = tokenDto.RefreshTokenExpiryTime;
             await _userManager.UpdateAsync(appUser);
 
-            return ObjectMapper.Mapper.Map<User>(appUser);
+            return ObjectMapper.Mapper.Map<AuthResult>(appUser);
         }
 
         public async Task RevokeRefreshToken(
@@ -72,10 +72,10 @@ namespace Services.Models.Repositories
             return await _userManager.CheckPasswordAsync(appUser, password);
         }
 
-        public async Task<User> GetUserAsync(string name)
+        public async Task<AuthResult> GetUserAsync(string name)
         {
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
-            return ObjectMapper.Mapper.Map<User>(appUser);
+            return ObjectMapper.Mapper.Map<AuthResult>(appUser);
         }
 
         public async Task<IdentityResult> CreateUserAsync(

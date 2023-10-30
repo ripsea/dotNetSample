@@ -2,7 +2,7 @@
 
 namespace Jwt.Models
 {
-    public class RegisterViewModel
+    public class RegisterRequest
     {
         [Required(ErrorMessage = "User Name is required")]
         public string? Username { get; set; }

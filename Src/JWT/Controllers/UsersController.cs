@@ -75,15 +75,15 @@ namespace Jwt.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        [SwaggerResponse(HttpStatusCode.OK, "成功", typeof(TokenDto))]
+        [SwaggerResponse(HttpStatusCode.OK, "成功", typeof(TokenRequest))]
         //[SwaggerResponse(HttpStatusCode.BadRequest, type: typeof(IEnumerable<ErrorResponse>))]
         //[SwaggerRequestExample(typeof(UserViewModel), typeof(UserViewModelRequestExample))]
         //[SwaggerResponseExample(HttpStatusCode.OK, typeof(TokenDto), typeof(TokenDtoResponseExample))]
         [SwaggerOperation(Tags = new[] { "JWT", "使用者作業" })]
-        public async Task<IActionResult> Authenticate(LoginViewModel login)
+        public async Task<IActionResult> Authenticate(LoginRequest login)
         {
-            var user = await userServiceRepository.GetUserAsync(login.Name);
-            if (user == null) { return Unauthorized("Incorrect username or password!"); }
+            var auth = await userServiceRepository.GetUserAsync(login.Name);
+            if (auth == null) { return Unauthorized("Incorrect username or password!"); }
 
             var result = await userServiceRepository.LoginAsync(login.Name, login.Password);
             if (!result)
@@ -97,16 +97,16 @@ namespace Jwt.Controllers
                 return Unauthorized("Invalid Attempt!");
             }
 
-            user = await userServiceRepository.AddRefreshToken(login.Name);
-            user.AccessToken = token.Access_Token;
-            _logger.LogInformation($"this is {login.Name}'s token {user.AccessToken}");
-            return Ok(user);
+            auth = await userServiceRepository.AddRefreshToken(login.Name);
+            auth.AccessToken = token.Access_Token;
+            _logger.LogInformation($"this is {login.Name}'s token {auth.AccessToken}");
+            return Ok(auth);
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterRequest model)
         {
             var user = 
                 await userServiceRepository.GetUserAsync(model.Username);
@@ -138,9 +138,9 @@ namespace Jwt.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("refreshToken")]
-        public async Task<IActionResult> Refresh(TokenDto token)
+        public async Task<IActionResult> RefreshToken(TokenRequest token)
         {
-            /*
+
             var principal =
                 jWTManager
                 .GetPrincipalFromExpiredToken(token.Access_Token);
@@ -162,11 +162,12 @@ namespace Jwt.Controllers
             {
                 return Unauthorized("Invalid attempt!");
             }
-            */
+
             return Ok(user);
         }
 
         //https://mp.weixin.qq.com/s/fWVR-y9C5vqmGZ_aOApq5A
+        /*
         private async Task<AuthResult> VerifyAndGenerateToken(
             TokenRequest tokenRequest)
         {
@@ -176,7 +177,11 @@ namespace Jwt.Controllers
             {
                 // Validation 1 - Validation JWT token format
                 // 此验证功能将确保 Token 满足验证参数，并且它是一个真正的 token 而不仅仅是随机字符串
-                var tokenInVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParams, out var validatedToken);
+                var tokenInVerification = 
+                    jwtTokenHandler.ValidateToken(
+                        tokenRequest.Access_Token, 
+                        _tokenValidationParams, 
+                        out var validatedToken);
 
                 // Validation 2 - Validate encryption alg
                 // 检查 token 是否有有效的安全算法
@@ -282,6 +287,8 @@ namespace Jwt.Controllers
                     };
                 }
 
+
+
                 // update current token 
                 // 将该 refresh token 设置为已使用
                 storedRefreshToken.IsUsed = true;
@@ -291,6 +298,7 @@ namespace Jwt.Controllers
                 // 生成一个新的 token
                 var dbUser = await _userManager.FindByIdAsync(storedRefreshToken.UserId);
                 return await GenerateJwtToken(dbUser);
+
             }
             catch (Exception ex)
             {
@@ -325,5 +333,6 @@ namespace Jwt.Controllers
             dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp).ToLocalTime();
             return dateTimeVal;
         }
+        */
     }
 }
