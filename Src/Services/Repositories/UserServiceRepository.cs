@@ -28,28 +28,28 @@ namespace Services.Models.Repositories
             this._userManager = userManager;
         }
 
-        public async Task<TokenRequest> GetRefreshToken(string username)
+        public async Task<TokenDto> GetRefreshToken(string username)
         {
             //retrieve the saved refresh token from database
             ApplicationUser appUser = await _userManager.FindByNameAsync(username);
-            TokenRequest token = new TokenRequest()
+            TokenDto token = new TokenDto()
             {
-                Refresh_Token = appUser.RefreshToken,
+                RefreshToken = appUser.RefreshToken,
                 RefreshTokenExpiryTime = appUser.RefreshTokenExpiryTime
             };
             return token;
         }
 
-        public async Task<AuthResult> AddRefreshToken(string name)
+        public async Task<TokenResultDto> AddRefreshToken(string name)
         {
             await RevokeRefreshToken(name);
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
             var tokenDto = _jwtManagerRepository.GenerateRefreshToken(name);
-            appUser.RefreshToken = tokenDto.Refresh_Token;
+            appUser.RefreshToken = tokenDto.RefreshToken;
             appUser.RefreshTokenExpiryTime = tokenDto.RefreshTokenExpiryTime;
             await _userManager.UpdateAsync(appUser);
 
-            return ObjectMapper.Mapper.Map<AuthResult>(appUser);
+            return ObjectMapper.Mapper.Map<TokenResultDto>(appUser);
         }
 
         public async Task RevokeRefreshToken(
@@ -72,10 +72,10 @@ namespace Services.Models.Repositories
             return await _userManager.CheckPasswordAsync(appUser, password);
         }
 
-        public async Task<AuthResult> GetUserAsync(string name)
+        public async Task<TokenResultDto> GetUserAsync(string name)
         {
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
-            return ObjectMapper.Mapper.Map<AuthResult>(appUser);
+            return ObjectMapper.Mapper.Map<TokenResultDto>(appUser);
         }
 
         public async Task<IdentityResult> CreateUserAsync(

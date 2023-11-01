@@ -12,7 +12,7 @@ namespace Services.Models
         {
             return new TokenResultDto
             {
-                Success = false,
+                Success = true,
                 Errors = null
             };
         }

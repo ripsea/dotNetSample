@@ -3,14 +3,14 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Jwt.Swagger
 {
-    internal class TokenDtoResponseExample : IExamplesProvider<TokenRequest>
+    internal class TokenDtoResponseExample : IExamplesProvider<TokenDto>
     {
-        public TokenRequest GetExamples()
+        public TokenDto GetExamples()
         {
-            return new TokenRequest
+            return new TokenDto
             {
-                Access_Token = "thisisaccesstoken",
-                Refresh_Token = "thisisarefreshtoken"
+                AccessToken = "thisisaccesstoken",
+                RefreshToken = "thisisarefreshtoken"
             };
         }
     }
