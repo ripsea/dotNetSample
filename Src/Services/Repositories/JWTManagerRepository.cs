@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Configurations;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,11 +17,12 @@ namespace Services.Models.Repositories
         private readonly TokenValidationParameters _tokenValidationParams;
         private readonly IUserServiceRepository userServiceRepository;
 
-        public JWTManagerRepository(JwtConfigOptions jwtConfigOptions, 
+        public JWTManagerRepository(
+            IOptionsMonitor<JwtConfigOptions> jwtConfigOptions, 
             TokenValidationParameters tokenValidationParams,
             IUserServiceRepository userServiceRepository)
         {
-            this._jwtConfigOptions = jwtConfigOptions;
+            this._jwtConfigOptions = jwtConfigOptions.CurrentValue;
             _tokenValidationParams = tokenValidationParams;
             this.userServiceRepository = userServiceRepository; 
         }
@@ -179,46 +182,22 @@ namespace Services.Models.Repositories
                     return tokenResultDto;
                 }
                 return tokenResultDto;
-                /*
+
                 // update current token 
                 // 将该 refresh token 设置为已使用
-                storedRefreshToken.IsUsed = true;
-                _apiDbContext.RefreshTokens.Update(storedRefreshToken);
-                await _apiDbContext.SaveChangesAsync();
+                //storedRefreshToken.IsUsed = true;
+                //_apiDbContext.RefreshTokens.Update(storedRefreshToken);
+                //await _apiDbContext.SaveChangesAsync();
 
                 // 生成一个新的 token
-                var dbUser = await _userManager.FindByIdAsync(storedRefreshToken.UserId);
-                return await GenerateJwtToken(dbUser);
-                */
+                //var dbUser = await _userManager.FindByIdAsync(storedRefreshToken.UserId);
+                //return await GenerateJwtToken(dbUser);
+                
 
             }
             catch (Exception ex)
             {
                 return null;
-                /*
-                if (ex.Message.Contains("Lifetime validation failed. The token is expired."))
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                {
-                    "Token has expired please re-login"
-                }
-                    };
-                }
-                else
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                {
-                    "Something went wrong."
-                }
-                    };
-                }
-                */
             }
         }
 
