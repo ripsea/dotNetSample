@@ -4,7 +4,7 @@ namespace Services.Models.Repositories
 {
     public interface IJWTManagerRepository
     {
-        TokenDto GenerateToken(string userName);
-        TokenDto GenerateRefreshToken(string userName);
+        string GenerateJwtToken(string userName);
+        string GenerateJwtRefreshToken(out DateTime expiredDateTime);
     }
 }

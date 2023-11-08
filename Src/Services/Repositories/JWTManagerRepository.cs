@@ -22,36 +22,14 @@ namespace Services.Models.Repositories
             this.jwtConfigOptions = jwtConfigOptions.CurrentValue;
 
         }
-        public TokenDto GenerateToken(string userName)
+
+        public string GenerateJwtRefreshToken(out DateTime expiredDateTime)
         {
-            return GenerateJWTTokens(userName);
-        }
-
-        public TokenDto GenerateRefreshToken(string username)
-        {
-            return GenerateJWTTokens(username);
-        }
-
-
-
-        public TokenDto GenerateJWTTokens(string userName)
-        {
-            var token = GenerateJwtSecurityToken(userName);
-            var refreshToken = GenerateRefreshToken();
-
+            var randomNumber = new byte[32];
             _ = int.TryParse(jwtConfigOptions.RefreshTokenValidityInDays,
                 out int refreshTokenValidityInDays);
 
-            return new TokenDto { 
-                AccessToken = token, 
-                RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
-            };
-        }
-
-        public string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
+            expiredDateTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(randomNumber);
@@ -60,10 +38,11 @@ namespace Services.Models.Repositories
         }
 
         //來源:https://blog.miniasp.com/post/2019/12/16/How-to-use-JWT-token-based-auth-in-aspnet-core-31
-        public string GenerateJwtSecurityToken(string userName, int expireMinutes = 30)
+        public string GenerateJwtToken(string userName)
         {
             var issuer = jwtConfigOptions.Issuer;
             var signKey = jwtConfigOptions.Key;
+            var expireMinutes = jwtConfigOptions.TokenValidityInMinutes;
 
             // Configuring "Claims" to your JWT Token
             var claims = new List<Claim>();

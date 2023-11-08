@@ -92,14 +92,14 @@ namespace Jwt.Controllers
                 return Unauthorized("Incorrect username or password!");
             }
 
-            var token = jWTManager.GenerateToken(login.Name);
+            var token = jWTManager.GenerateJwtToken(login.Name);
             if (token == null)
             {
                 return Unauthorized("Invalid Attempt!");
             }
 
             auth = await userServiceRepository.AddRefreshToken(login.Name);
-            auth.AccessToken = token.AccessToken;
+            auth.AccessToken = token;
             _logger.LogInformation($"this is {login.Name}'s token {auth.AccessToken}");
             return Ok(auth);
         }
@@ -155,7 +155,7 @@ namespace Jwt.Controllers
             }
 
             var user = await userServiceRepository.AddRefreshToken(userName);
-            user.AccessToken = jWTManager.GenerateToken(userName).AccessToken;
+            user.AccessToken = jWTManager.GenerateJwtToken(userName);
 
             if (user == null)
             {
