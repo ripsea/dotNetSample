@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Configurations;
+using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -13,18 +14,13 @@ namespace Services.Models.Repositories
 {
     public class JWTManagerRepository : IJWTManagerRepository
     {
-        private readonly JwtConfigOptions _jwtConfigOptions;
-        private readonly TokenValidationParameters _tokenValidationParams;
-        private readonly IUserServiceRepository userServiceRepository;
+        private readonly JwtConfigOptions jwtConfigOptions;
 
         public JWTManagerRepository(
-            IOptionsMonitor<JwtConfigOptions> jwtConfigOptions, 
-            TokenValidationParameters tokenValidationParams,
-            IUserServiceRepository userServiceRepository)
+            IOptionsMonitor<JwtConfigOptions> jwtConfigOptions)
         {
-            this._jwtConfigOptions = jwtConfigOptions.CurrentValue;
-            _tokenValidationParams = tokenValidationParams;
-            this.userServiceRepository = userServiceRepository; 
+            this.jwtConfigOptions = jwtConfigOptions.CurrentValue;
+
         }
         public TokenDto GenerateToken(string userName)
         {
@@ -36,31 +32,18 @@ namespace Services.Models.Repositories
             return GenerateJWTTokens(username);
         }
 
+
+
         public TokenDto GenerateJWTTokens(string userName)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.UTF8.GetBytes(_jwtConfigOptions.Key);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, userName)
-                        //Claims.Add(new Claim(ClaimTypes.Role, userRole));
-                    }),
-                Expires = DateTime.Now.AddMinutes(10),
-                SigningCredentials = 
-                    new SigningCredentials(
-                        new SymmetricSecurityKey(tokenKey), 
-                        SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = GenerateJwtSecurityToken(userName);
             var refreshToken = GenerateRefreshToken();
 
-            _ = int.TryParse(_jwtConfigOptions.RefreshTokenValidityInDays,
+            _ = int.TryParse(jwtConfigOptions.RefreshTokenValidityInDays,
                 out int refreshTokenValidityInDays);
 
             return new TokenDto { 
-                AccessToken = tokenHandler.WriteToken(token), 
+                AccessToken = token, 
                 RefreshToken = refreshToken,
                 RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
             };
@@ -76,161 +59,65 @@ namespace Services.Models.Repositories
             }
         }
 
-        //https://mp.weixin.qq.com/s/fWVR-y9C5vqmGZ_aOApq5A
-        //https://www.cnblogs.com/ittranslator/p/asp-net-core-5-rest-api-authentication-with-jwt-step-by-step.html
-        private async Task<TokenResultDto> VerifyToken(
-            TokenDto tokenRequest)
+        //來源:https://blog.miniasp.com/post/2019/12/16/How-to-use-JWT-token-based-auth-in-aspnet-core-31
+        public string GenerateJwtSecurityToken(string userName, int expireMinutes = 30)
         {
-            TokenResultDto tokenResultDto = DtoFactory.TokenResultDto();
-            List<string> errors = new List<string>();
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var issuer = jwtConfigOptions.Issuer;
+            var signKey = jwtConfigOptions.Key;
 
-            try
+            // Configuring "Claims" to your JWT Token
+            var claims = new List<Claim>();
+
+            // In RFC 7519 (Section#4), there are defined 7 built-in Claims,
+            // but we mostly use 2 of them.
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Iss, issuer));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userName)); // User.Identity.Name
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "The Audience"));
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Exp, DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds().ToString()));
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString())); // 必須為數字
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString())); // 必須為數字
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())); 
+            // JWT ID
+
+            // The "NameId" claim is usually unnecessary.
+            //claims.Add(new Claim(JwtRegisteredClaimNames.NameId, userName));
+
+            // This Claim can be replaced by JwtRegisteredClaimNames.Sub, so it's redundant.
+            //claims.Add(new Claim(ClaimTypes.Name, userName));
+
+            // TODO: You can define your "roles" to your Claims.
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            claims.Add(new Claim(ClaimTypes.Role, "Users"));
+
+            var userClaimsIdentity = new ClaimsIdentity(claims);
+
+            // Create a SymmetricSecurityKey for JWT Token signatures
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey));
+
+            // HmacSha256 MUST be larger than 128 bits, so the key can't be too short. At least 16 and more characters.
+            // https://stackoverflow.com/questions/47279947/idx10603-the-algorithm-hs256-requires-the-securitykey-keysize-to-be-greater
+            var signingCredentials = new SigningCredentials(
+                securityKey, 
+                SecurityAlgorithms.HmacSha256Signature);
+
+            // Create SecurityTokenDescriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                // Validation 1 - Validation JWT token format
-                // Program.AddJwtBearer()參數
-                var principal =
-                    jwtTokenHandler.ValidateToken(
-                        tokenRequest.AccessToken,
-                        _tokenValidationParams,
-                        out var validatedToken);
+                Issuer = issuer,
+                //Audience = issuer, // Sometimes you don't have to define Audience.
+                //NotBefore = DateTime.Now, // Default is DateTime.Now
+                //IssuedAt = DateTime.Now, // Default is DateTime.Now
+                Subject = userClaimsIdentity,
+                Expires = DateTime.Now.AddMinutes(expireMinutes),
+                SigningCredentials = signingCredentials
+            };
 
-                // Validation 2 - Validate encryption alg
-                // 是否有有效的安全算法
-                if (validatedToken is JwtSecurityToken jwtSecurityToken)
-                {
-                    var result = jwtSecurityToken.Header.Alg.Equals(
-                        SecurityAlgorithms.HmacSha256, 
-                        StringComparison.InvariantCultureIgnoreCase);
-
-                    if (result==false)
-                    {
-                        tokenResultDto.Success = false;
-                        errors.Add("JwtSecurityToken Alg Check Failed.");
-                        tokenResultDto.Errors = errors;
-                        return tokenResultDto;
-                    }
-                }
-
-                // Validation 3 - validate expiry date
-                // token過期
-                var utcExpiryDate = long.Parse(
-                    principal.Claims
-                    .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
-
-                var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
-
-                if (expiryDate > DateTime.UtcNow)
-                {
-                    tokenResultDto.Success = false;
-                    errors.Add("Token has not yet expired.");
-                    tokenResultDto.Errors = errors;
-                    return tokenResultDto;
-                }
-
-                // validation 4 - validate existence of the token
-                // Check refresh token
-                var storedRefreshToken = await userServiceRepository.GetRefreshToken(principal.Identity.Name);
-                if (storedRefreshToken == null)
-                {                    
-                    tokenResultDto.Success = false;
-                    errors.Add("Refresh Token does not exist.");
-                    tokenResultDto.Errors = errors;
-                    return tokenResultDto;
-                }
-
-                // Validation 5 - 检查存储的 RefreshToken 是否已过期
-                // Check the date of the saved refresh token if it has expired
-                if (DateTime.UtcNow > storedRefreshToken.RefreshTokenExpiryTime)
-                {
-                    tokenResultDto.Success = false;
-                    errors.Add("Refresh Token has expired, user needs to re-login");
-                    tokenResultDto.Errors = errors;
-                    return tokenResultDto;
-                }
-
-                // Validation 6 - validate if used
-                // 验证 refresh token 是否已使用
-                if (storedRefreshToken.RefreshTokenIsUsed)
-                {
-                    tokenResultDto.Success = false;
-                    errors.Add("Refresh Token has been used");
-                    tokenResultDto.Errors = errors;
-                    return tokenResultDto;
-                }
-
-                // Validation 7 - validate if revoked
-                // 检查 refresh token 是否被撤销
-                if (storedRefreshToken.RefreshTokenIsRevorked)
-                {
-                    tokenResultDto.Success = false;
-                    errors.Add("Refresh Token has been revoked");
-                    tokenResultDto.Errors = errors;
-                    return tokenResultDto;
-                }
-
-                // Validation 8 - validate the user id
-                // 比對產生JWT token 時儲存的user.Id
-                var jti = principal.Claims.FirstOrDefault(
-                    x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-
-                if (storedRefreshToken.RefreshTokenJwtId != jti)
-                {
-                    tokenResultDto.Success = false;
-                    errors.Add("The token doesn't mateched the saved token");
-                    tokenResultDto.Errors = errors;
-                    return tokenResultDto;
-                }
-                return tokenResultDto;
-
-                // update current token 
-                // 将该 refresh token 设置为已使用
-                //storedRefreshToken.IsUsed = true;
-                //_apiDbContext.RefreshTokens.Update(storedRefreshToken);
-                //await _apiDbContext.SaveChangesAsync();
-
-                // 生成一个新的 token
-                //var dbUser = await _userManager.FindByIdAsync(storedRefreshToken.UserId);
-                //return await GenerateJwtToken(dbUser);
-                
-
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-        private DateTime UnixTimeStampToDateTime(long unixTimeStamp)
-        {
-            var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTimeVal;
-        }
-
-        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
-        {
-            var Key = Encoding.UTF8.GetBytes(_jwtConfigOptions.Key);
-
+            // Generate a JWT securityToken, than get the serialized Token result (string)
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = 
-                tokenHandler.ValidateToken(
-                    token,
-                    _tokenValidationParams, 
-                    out SecurityToken securityToken);
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var serializeToken = tokenHandler.WriteToken(securityToken);
 
-            JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
-
-            if (jwtSecurityToken == null 
-                || !jwtSecurityToken.Header.Alg.Equals(
-                    SecurityAlgorithms.HmacSha256, 
-                    StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-
-
-            return principal;
+            return serializeToken;
         }
 
     }

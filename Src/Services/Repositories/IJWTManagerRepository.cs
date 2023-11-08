@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿
 
 namespace Services.Models.Repositories
 {
@@ -6,6 +6,5 @@ namespace Services.Models.Repositories
     {
         TokenDto GenerateToken(string userName);
         TokenDto GenerateRefreshToken(string userName);
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

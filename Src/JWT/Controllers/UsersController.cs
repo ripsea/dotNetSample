@@ -18,6 +18,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace Jwt.Controllers
 {
@@ -138,25 +139,23 @@ namespace Jwt.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("refreshToken")]
-        public async Task<IActionResult> RefreshToken(TokenDto token)
+        public async Task<IActionResult> RefreshToken(TokenDto requestToken)
         {
+            var userName = User.Identity.Name??null;
 
-            var principal =
-                jWTManager
-                .GetPrincipalFromExpiredToken(token.AccessToken);
+            var userToken = await userServiceRepository.GetRefreshToken(userName);          
 
-            var username = principal.Identity?.Name;
-
-            var checkToken = await userServiceRepository.GetRefreshToken(username);
-            
-            if ((checkToken.RefreshToken!= token.RefreshToken)
-                ||(checkToken.RefreshTokenExpiryTime < DateTime.Now))
+            if ((userToken.RefreshToken!= requestToken.RefreshToken)
+                ||(userToken.RefreshTokenExpiryTime < DateTime.Now)
+                ||(userToken.RefreshToken == null)
+                ||(userToken.RefreshTokenIsUsed==true)
+                ||(userToken.RefreshTokenIsRevorked == true))
             {
                 return Unauthorized("Invalid attempt!");
             }
 
-            var user = await userServiceRepository.AddRefreshToken(username);
-            user.AccessToken = checkToken.AccessToken;
+            var user = await userServiceRepository.AddRefreshToken(userName);
+            user.AccessToken = jWTManager.GenerateToken(userName).AccessToken;
 
             if (user == null)
             {

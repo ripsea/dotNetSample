@@ -46,7 +46,7 @@ namespace Services.Models.Repositories
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
             var tokenDto = _jwtManagerRepository.GenerateRefreshToken(name);
             appUser.RefreshToken = tokenDto.RefreshToken;
-            appUser.RefreshTokenExpiryTime = tokenDto.RefreshTokenExpiryTime;
+            appUser.RefreshTokenExpiryTime = tokenDto.RefreshTokenExpiryTime;          
             await _userManager.UpdateAsync(appUser);
 
             return ObjectMapper.Mapper.Map<TokenResultDto>(appUser);
