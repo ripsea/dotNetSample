@@ -167,7 +167,10 @@ try
                 ValidateIssuerSigningKey = false,
 
                 // "1234567890123456" 應該從 IConfiguration 取得
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Key))
+                IssuerSigningKey = 
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Key)),
+                //https://stackoverflow.com/questions/61909514/jwt-token-expiration-not-working-in-asp-net-core-api
+                ClockSkew = TimeSpan.Zero
             };
             o.Events = new JwtBearerEvents
             {

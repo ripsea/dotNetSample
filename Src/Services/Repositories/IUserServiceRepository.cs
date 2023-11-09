@@ -6,16 +6,16 @@ namespace Services.Models.Repositories
 {
     public interface IUserServiceRepository
     {
-
-        Task<TokenDto> GetRefreshToken(string username);
-        Task<TokenResultDto> AddRefreshToken(string name);
+        Task<bool> IsRefreshTokenValid(string username,string refreshToken);
+        Task<TokenDto> GetRefreshTokenData(string username);
+        Task<TokenDto> CreateUserToken(string name);
 
         Task RevokeRefreshToken(string username);
 
         void SaveCommit();
 
         Task<bool> LoginAsync(string name, string password);
-        Task<TokenResultDto> GetUserAsync(string username);
+        Task<TokenDto> GetUserAsync(string username);
         Task<IdentityResult> CreateUserAsync(
             string username,
             string email,

@@ -28,19 +28,36 @@ namespace Services.Models.Repositories
             this._userManager = userManager;
         }
 
-        public async Task<TokenDto> GetRefreshToken(string username)
+        public async Task<TokenDto> GetRefreshTokenData(string refreshToken)
         {
-            //retrieve the saved refresh token from database
-            ApplicationUser appUser = await _userManager.FindByNameAsync(username);
-            TokenDto token = new TokenDto()
-            {
-                RefreshToken = appUser.RefreshToken,
-                RefreshTokenExpiryTime = appUser.RefreshTokenExpiryTime
-            };
-            return token;
+            //retrieve the saved refresh token from database            
+            var appUser = _userManager.Users
+                    .Where(x => x.RefreshToken == refreshToken)
+                    .FirstOrDefault();
+            
+            return ObjectMapper.Mapper.Map<TokenDto>(appUser);
         }
 
-        public async Task<TokenResultDto> AddRefreshToken(string name)
+        public async Task<bool> IsRefreshTokenValid(
+            string username,
+            string refreshToken)
+        {
+            var userToken = await GetRefreshTokenData(refreshToken);
+
+            if ((userToken==null)
+                || (userToken.RefreshToken != refreshToken)
+                || (userToken.RefreshTokenExpiryTime < DateTime.Now)
+                || (userToken.RefreshToken == null)
+                || (userToken.RefreshTokenIsUsed == true)
+                || (userToken.RefreshTokenIsRevorked == true)
+                || (!userToken.UserName.Equals(username)))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<TokenDto> CreateUserToken(string name)
         {
             await RevokeRefreshToken(name);
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
@@ -50,14 +67,22 @@ namespace Services.Models.Repositories
             appUser.RefreshTokenExpiryTime = RefreshTokenExpiryTime;          
             await _userManager.UpdateAsync(appUser);
 
-            return ObjectMapper.Mapper.Map<TokenResultDto>(appUser);
+            var token = _jwtManagerRepository.GenerateJwtAccessToken(name);
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            TokenDto tokenDto = ObjectMapper.Mapper.Map<TokenDto>(appUser);
+            tokenDto.AccessToken = token;
+            return tokenDto;
         }
 
         public async Task RevokeRefreshToken(
             string username)
         {
             ApplicationUser appUser = await _userManager.FindByNameAsync(username);
-            appUser.RefreshToken = null;
+            DtoFactory.SetRefreshTokenDefault(appUser);
             await _userManager.UpdateAsync(appUser);
         }
 
@@ -73,10 +98,10 @@ namespace Services.Models.Repositories
             return await _userManager.CheckPasswordAsync(appUser, password);
         }
 
-        public async Task<TokenResultDto> GetUserAsync(string name)
+        public async Task<TokenDto> GetUserAsync(string name)
         {
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
-            return ObjectMapper.Mapper.Map<TokenResultDto>(appUser);
+            return ObjectMapper.Mapper.Map<TokenDto>(appUser);
         }
 
         public async Task<IdentityResult> CreateUserAsync(
@@ -93,7 +118,6 @@ namespace Services.Models.Repositories
 
             return await _userManager.CreateAsync(user, password);
         }
-
 
     }
 }

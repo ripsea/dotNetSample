@@ -38,7 +38,7 @@ namespace Services.Models.Repositories
         }
 
         //來源:https://blog.miniasp.com/post/2019/12/16/How-to-use-JWT-token-based-auth-in-aspnet-core-31
-        public string GenerateJwtToken(string userName)
+        public string GenerateJwtAccessToken(string userName)
         {
             var issuer = jwtConfigOptions.Issuer;
             var signKey = jwtConfigOptions.Key;

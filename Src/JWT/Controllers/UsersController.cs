@@ -44,7 +44,7 @@ namespace Jwt.Controllers
         }
 
         [HttpGet]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         public List<string> Get()
         {
             var users = new List<string>
@@ -83,23 +83,20 @@ namespace Jwt.Controllers
         [SwaggerOperation(Tags = new[] { "JWT", "使用者作業" })]
         public async Task<IActionResult> Authenticate(LoginRequest login)
         {
-            var auth = await userServiceRepository.GetUserAsync(login.Name);
-            if (auth == null) { return Unauthorized("Incorrect username or password!"); }
+            var auth = await userServiceRepository
+                .GetUserAsync(login.Name);
+            if (auth == null) { 
+                return Unauthorized("Incorrect username or password!"); 
+            }
 
-            var result = await userServiceRepository.LoginAsync(login.Name, login.Password);
+            var result = await userServiceRepository
+                .LoginAsync(login.Name, login.Password);
             if (!result)
             {
                 return Unauthorized("Incorrect username or password!");
             }
 
-            var token = jWTManager.GenerateJwtToken(login.Name);
-            if (token == null)
-            {
-                return Unauthorized("Invalid Attempt!");
-            }
-
-            auth = await userServiceRepository.AddRefreshToken(login.Name);
-            auth.AccessToken = token;
+            auth = await userServiceRepository.CreateUserToken(login.Name);
             _logger.LogInformation($"this is {login.Name}'s token {auth.AccessToken}");
             return Ok(auth);
         }
@@ -135,34 +132,33 @@ namespace Jwt.Controllers
                     Message = "User created successfully!" });
         }
 
-
         [AllowAnonymous]
         [HttpPost]
         [Route("refreshToken")]
-        public async Task<IActionResult> RefreshToken(TokenDto requestToken)
-        {
-            var userName = User.Identity.Name??null;
+        public async Task<IActionResult> RefreshToken(
+            RefreshTokenRequest requestToken)
+        { 
+            var isRefreshTokenValid = 
+                await userServiceRepository.IsRefreshTokenValid(
+                username: requestToken.UserName,
+                refreshToken: requestToken.RefreshToken);
 
-            var userToken = await userServiceRepository.GetRefreshToken(userName);          
-
-            if ((userToken.RefreshToken!= requestToken.RefreshToken)
-                ||(userToken.RefreshTokenExpiryTime < DateTime.Now)
-                ||(userToken.RefreshToken == null)
-                ||(userToken.RefreshTokenIsUsed==true)
-                ||(userToken.RefreshTokenIsRevorked == true))
-            {
+            if (!isRefreshTokenValid)
+            { 
                 return Unauthorized("Invalid attempt!");
             }
 
-            var user = await userServiceRepository.AddRefreshToken(userName);
-            user.AccessToken = jWTManager.GenerateJwtToken(userName);
-
-            if (user == null)
+            var userToken = 
+                await userServiceRepository.CreateUserToken(
+                    requestToken.UserName);
+            if (userToken == null)
             {
                 return Unauthorized("Invalid attempt!");
             }
+            userToken.AccessToken = 
+                jWTManager.GenerateJwtAccessToken(requestToken.UserName);
 
-            return Ok(user);
+            return Ok(userToken);
         }
 
     }

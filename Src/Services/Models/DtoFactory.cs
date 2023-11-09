@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Entities.Auth;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,14 @@ namespace Services.Models
 {
     public static class DtoFactory
     {
-        public static TokenResultDto TokenResultDto()
+        public static ApplicationUser SetRefreshTokenDefault(
+            ApplicationUser application)
         {
-            return new TokenResultDto
-            {
-                Success = true,
-                Errors = null
-            };
+            application.RefreshToken = null;
+            application.RefreshTokenExpiryTime = null;
+            application.RefreshTokenIsRevorked = false;
+            application.RefreshTokenIsUsed = false;
+            return application;
         }
     }
 }
