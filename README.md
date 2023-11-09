@@ -1,4 +1,8 @@
-# 測試記錄要項說明
+# Jwt
+
+<img width="1652" alt="jwt" src="https://github.com/ripsea/dotNetSample/assets/26401280/10e9ae49-ae95-4fd1-9b04-172ff2862342">
+
+# 其他
 ## Logger.cs-TurnKeyFilesParse
 
 若空白(未設定)就預設在專案的Logs下ConfigurationManager.AppSettings["LogPath"]
