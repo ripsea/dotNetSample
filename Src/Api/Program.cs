@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//https://dotblogs.com.tw/rainmaker/2017/03/12/130759
+//NuGet package Asp.Versioning.Mvc
+builder.Services.AddApiVersioning(opt =>
+{
+    opt.ReportApiVersions = true;//如果這個設 true 的話，就會將支援的版本列在 header 之中。
+    opt.AssumeDefaultVersionWhenUnspecified = true;//設個設 true 的話，使用時如果沒特別指定的話，就會用 DefaultApiVersion 設定的版本。
+    opt.DefaultApiVersion = new ApiVersion(1, 0);//設定 API 預設的版本。 
+});
 
 var app = builder.Build();
 
@@ -29,9 +39,9 @@ app.UseExceptionHandler(a => a.Run(async context =>
     var exceptionFeat = context.Features.Get<IExceptionHandlerFeature>();
     var error = exceptionFeat.Error;
     //截取部份要處理的response
-    var isApi = exceptionFeat.Path.Contains("Home");
-    if (isApi)
-    {
+    //var isApi = exceptionFeat.Path.Contains("Home");
+    //if (isApi)
+    //{
         var problem = new ProblemDetails { Title = "Critical Error" };
         if (error != null)
         {
@@ -44,7 +54,7 @@ app.UseExceptionHandler(a => a.Run(async context =>
                 problem.Detail = error.Message;
         }
         await context.Response.WriteAsJsonAsync(problem);
-    }
+    //}
 }));
 
 app.UseHttpsRedirection();

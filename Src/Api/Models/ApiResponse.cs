@@ -34,14 +34,14 @@ namespace Api.Models
 
         public ApiResponse(dynamic ex)
         {
-            code = (int)HttpStatusCode.BadRequest;
+            //code = (int)HttpStatusCode.BadRequest;
             //message = ex.Errors.Select(x => $"{x.PropertyName}: {x.ErrorMessage}").Join(";");
             
         }
 
         public ApiResponse(UnauthorizedAccessException ex)
         {
-            code = (int)HttpStatusCode.Unauthorized;
+            //code = (int)HttpStatusCode.Unauthorized;
             message = ex.Message;
         }
 

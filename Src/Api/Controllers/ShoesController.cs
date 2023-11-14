@@ -3,11 +3,13 @@ using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
 using Api.Models;
+using Asp.Versioning;
 
 namespace MvcWithApi.Controllers
 {
+    [ApiVersion("1.0")]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ShoesController : ControllerBase
     {
         private readonly IShoeRetrievalService shoeRetrievalService;
