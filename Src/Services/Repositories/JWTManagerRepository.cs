@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Configurations;
@@ -15,12 +16,14 @@ namespace Services.Models.Repositories
     public class JWTManagerRepository : IJWTManagerRepository
     {
         private readonly JwtConfigOptions jwtConfigOptions;
+        private readonly ILogger<JWTManagerRepository> _logger;
 
         public JWTManagerRepository(
-            IOptionsMonitor<JwtConfigOptions> jwtConfigOptions)
+            IOptionsMonitor<JwtConfigOptions> jwtConfigOptions,
+            ILogger<JWTManagerRepository> logger)
         {
             this.jwtConfigOptions = jwtConfigOptions.CurrentValue;
-
+            this._logger = logger;
         }
 
         public string GenerateJwtRefreshToken(out DateTime expiredDateTime)

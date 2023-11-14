@@ -6,6 +6,7 @@ using Data.Repositories;
 using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Services.AutoMapper;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,14 +19,19 @@ namespace Services.Models.Repositories
         private readonly IRepositoryWrapper _repo;
         private readonly IJWTManagerRepository _jwtManagerRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        //Logging in a .Net Core Library
+        //https://xfischer.github.io/logging-dotnet-core/
+        private readonly ILogger<UserServiceRepository> _logger;
 
         public UserServiceRepository(IRepositoryWrapper repo,
             IJWTManagerRepository jwtManagerRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ILogger<UserServiceRepository> logger)
         {
             this._repo = repo;
             this._jwtManagerRepository = jwtManagerRepository;
             this._userManager = userManager;
+            this._logger = logger;
         }
 
         public async Task<TokenDto> GetRefreshTokenData(string refreshToken)
@@ -100,6 +106,7 @@ namespace Services.Models.Repositories
 
         public async Task<TokenDto> GetUserAsync(string name)
         {
+            _logger.LogInformation($"{name}");
             ApplicationUser appUser = await _userManager.FindByNameAsync(name);
             return ObjectMapper.Mapper.Map<TokenDto>(appUser);
         }
