@@ -6,7 +6,7 @@ namespace Api.Models
 {
     public class ApiResponse
     {
-        public int code { get; private set; } = (int)HttpStatusCode.OK;
+        //public int code { get; private set; } = (int)HttpStatusCode.OK;
 
         public string message { get; private set; }
 
